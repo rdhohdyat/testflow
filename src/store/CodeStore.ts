@@ -14,7 +14,7 @@ type CodeStore = {
 
 export const useCodeStore = create<CodeStore>((set) => ({
   code: localStorage.getItem("code") || "",
-  params: [],
+  params: JSON.parse(localStorage.getItem("params") || "[]"), // Menambahkan parsing array params
   nodes: JSON.parse(localStorage.getItem("nodes") || "[]"),
   edges: JSON.parse(localStorage.getItem("edges") || "[]"),
 
@@ -23,7 +23,10 @@ export const useCodeStore = create<CodeStore>((set) => ({
     set({ code });
   },
 
-  setParams: (params) => set({ params }),
+  setParams: (params) => {
+    localStorage.setItem("params", JSON.stringify(params)); // Menggunakan JSON.stringify() untuk menyimpan array
+    set({ params });
+  },
 
   setNodes: (nodes) => {
     localStorage.setItem("nodes", JSON.stringify(nodes));

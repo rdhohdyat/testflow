@@ -31,21 +31,15 @@ import { useCodeStore } from "../store/CodeStore";
 import { useMemo } from "react";
 
 function WorkFlowPage() {
-  const { params, setParams } = useCodeStore();
-  const [edge, setEdge] = useState(0);
-  const [node, setNode] = useState(0);
+  const { params, setParams, edges, setEdges, nodes, setNodes } = useCodeStore();
 
   const paths = [[1, 2, 3], [1, 2, 4, 5]]
 
   const cyclomaticComplexity = useMemo(() => {
-    const E = initialEdges.length;
-    const N = initialNodes.length;
-
-    setEdge(E);
-    setNode(N);
-
+    const E = edges.length; // Gunakan edges dari store
+    const N = nodes.length; // Gunakan nodes dari store
     return E - N + 2;
-  }, [initialEdges, initialNodes]);
+  }, [edges, nodes]);
 
   return (
     <>
@@ -57,8 +51,8 @@ function WorkFlowPage() {
 
         <div className="flex h-full justify-center items-center bg-main/10 w-full rounded-lg bg-white border-2 border-black shadow-[1px_3px_0_0_rgba(0,0,0,1)] p-6 text-center">
           <ReactFlow
-            nodes={initialNodes}
-            edges={initialEdges}
+            nodes={nodes}
+            edges={edges}
             nodeTypes={nodeTypes}
           >
             <Background variant={BackgroundVariant.Lines} />
@@ -70,9 +64,9 @@ function WorkFlowPage() {
           <TooltipComponent information="minimum number of paths to be tested">
             <div className="border-b border-black pb-2 text-start">
               <h2 className="text-lg font-bold">Cyclomatic Complexity</h2>
-              <p>Node : {node}</p>
-              <p>Edge : {edge}</p>
-              <p className="text-lg font-semibold">{edge} - {node} + 2 = {cyclomaticComplexity}</p>
+              <p>Node : {nodes.length}</p>
+              <p>Edge : {edges.length}</p>
+              <p className="text-lg font-semibold">{edges.length} - {nodes.length} + 2 = {cyclomaticComplexity}</p>
             </div>
           </TooltipComponent>
           <TooltipComponent information="All execution paths from FlowGraph">
@@ -99,9 +93,9 @@ function WorkFlowPage() {
             <div className="mt-2 flex flex-col gap-2">
               <div className="flex flex-col gap-2">
                 <h1 className="text-lg font-bold">
-                  Input Test Case {params.join(", ")}
+                  Input Test Case {params?.join(", ")}
                 </h1>
-                {params.map((param, index) => (
+                {params?.map((param, index) => (
                   <input
                     key={index}
                     className="w-full border border-black rounded p-2 focus:outline-none focus:ring-2 focus:ring-main"
