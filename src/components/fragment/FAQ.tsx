@@ -1,4 +1,5 @@
 import FaQAccordion from "../FaQAccordion";
+import faqIllustration from "../../assets/faq.svg"
 
 type FAQItem = {
   question: string;
@@ -13,9 +14,9 @@ const FAQ = () => {
         "A Control Flow Graph is a representation of all possible paths that might be traversed through a program during its execution.",
     },
     {
-      question: "What is CodeFlow?",
+      question: "What is TestFlow?",
       answer:
-        "CodeFlow is a feature in our application that visually represents the control flow of a program, helping developers understand and analyze their code.",
+        "TestFlow is a feature in our application that visually represents the control flow of a program, helping developers understand and analyze their code.",
     },
     {
       question: "How does the application generate a CFG?",
@@ -33,24 +34,9 @@ const FAQ = () => {
         "Currently, the application supports Python, JavaScript, and Java, with plans to add more languages in the future.",
     },
     {
-      question: "How can a Control Flow Graph help in debugging?",
-      answer:
-        "By visualizing the execution paths, you can identify unreachable code, potential infinite loops, and other issues more easily.",
-    },
-    {
       question: "Is the Control Flow Graph exportable?",
       answer:
         "Yes, you can export the graph as an image or PDF for documentation purposes.",
-    },
-    {
-      question: "Can I interact with the graph?",
-      answer:
-        "Yes, the nodes and edges in the graph are interactive, allowing you to explore different parts of your program's flow in detail.",
-    },
-    {
-      question: "What is the difference between Control Flow Graph and Data Flow Graph?",
-      answer:
-        "A Control Flow Graph focuses on the order of execution, while a Data Flow Graph emphasizes the flow of data between operations.",
     },
     {
       question: "Does the application support static analysis tools?",
@@ -60,13 +46,24 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 container bg-white">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center mb-12 text-neutral-900">
-          Frequently Asked Questions
-        </h2>
-        
-        <div className="grid md:grid-cols-2 gap-6">
+    <section className="py-20 container">
+    <div className="max-w-6xl mx-auto">
+      <h2 className="text-3xl font-bold text-center mb-12 text-neutral-900">
+        Frequently Asked Questions
+      </h2>
+  
+      <div className="grid md:grid-cols-2 gap-10 items-start">
+        {/* Illustration */}
+        <div className="hidden md:block">
+          <img
+            src={faqIllustration}
+            alt="FAQ Illustration"
+            className="w-full max-w-md mx-auto"
+          />
+        </div>
+  
+        {/* FAQ list */}
+        <div className="space-y-4">
           {faqs.map((faq, index) => (
             <FaQAccordion
               key={index}
@@ -77,7 +74,8 @@ const FAQ = () => {
           ))}
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 

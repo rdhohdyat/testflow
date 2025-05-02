@@ -8,9 +8,11 @@ const Footer = () => {
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="text-center md:text-left">
           <a href="/">
-           <Logo/>
+            <Logo />
           </a>
-          <p className="text-sm mt-2">© 2025 Ridho Hidayat. All rights reserved.</p>
+          <p className="text-sm mt-2">
+            © 2025 Ridho Hidayat. All rights reserved.
+          </p>
         </div>
 
         <nav className="flex flex-wrap justify-center gap-4 text-sm">
@@ -23,19 +25,27 @@ const Footer = () => {
           <a href="#about" className="hover:text-foreground transition-colors">
             About
           </a>
-          <a href="#service" className="hover:text-foreground transition-colors">
+          <a
+            href="#service"
+            className="hover:text-foreground transition-colors"
+          >
             Services
           </a>
-          <a href="#contact" className="hover:text-foreground transition-colors">
+          <a
+            href="#contact"
+            className="hover:text-foreground transition-colors"
+          >
             Contact
           </a>
         </nav>
 
         <div className="flex space-x-2">
-          <Button size="icon" variant="ghost">
-            <Github className="h-5 w-5" />
-          </Button>
-          <Button size="icon" variant="ghost">
+          <a href="https://github.com/rdhohdyat">
+            <Button size="icon" variant="outline">
+              <Github className="h-5 w-5" />
+            </Button>
+          </a>
+          <Button size="icon" variant="outline">
             <Twitter className="h-5 w-5" />
           </Button>
         </div>

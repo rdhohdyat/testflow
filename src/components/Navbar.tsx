@@ -40,7 +40,7 @@ export const Navbar = () => {
             key={link.href}
             href={link.href}
             className={`text-neutral-700 hover:text-neutral-900 transition-colors ${
-              isMobile ? "text-lg py-2" : "text-sm"
+              isMobile ? "py-2" : "text-sm"
             } px-4`}
           >
             {link.label}
@@ -109,7 +109,7 @@ export const Navbar = () => {
         {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button className="xl:hidden" variant="ghost" size="icon">
+            <Button className="xl:hidden" variant="outline" size="icon">
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
@@ -120,13 +120,13 @@ export const Navbar = () => {
             <div className="flex flex-col mt-6 gap-3">
               <Link
                 to="/"
-                className="text-neutral-700 hover:text-neutral-900 transition-colors text-lg px-4 py-2"
+                className="text-neutral-700 hover:text-neutral-900 transition-colors  px-4 py-2"
               >
                 Home
               </Link>
               <a
                 href={isWorkPage ? "/" : "#docs"}
-                className="text-neutral-700 hover:text-neutral-900 transition-colors text-lg px-4 py-2"
+                className="text-neutral-700 hover:text-neutral-900 transition-colors  px-4 py-2"
               >
                 Docs
               </a>
