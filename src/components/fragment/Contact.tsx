@@ -1,76 +1,77 @@
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const Contact = () => {
   return (
     <section
       id="contact"
-      className="container py-20 px-4 bg-white border-t-2 border-black text-center"
+      className="container py-20 px-6 bg-neutral-50"
     >
-      <h2 className="text-3xl font-bold text-center mb-4 text-black border-b-4 border-black inline-block">
-        Contact Us
-      </h2>
-      <p className="text-lg text-center mb-6 text-gray-700">
-        Have any questions or feedback? We would love to hear from you!
-      </p>
+      <div className="max-w-2xl mx-auto text-center">
+        <h2 className="text-3xl font-semibold mb-4 text-neutral-900">
+          Contact Us
+        </h2>
+        <p className=" mb-8 text-neutral-600">
+          Have any questions or feedback? We would love to hear from you!
+        </p>
 
-      <div className="max-w-2xl mx-auto">
-        <form className="space-y-6 bg-white border-2 rounded-lg border-black p-4 xl:p-8 shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-lg font-semibold text-start text-black"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full p-3 border border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] rounded-lg hover:shadow-none focus:shadow-none hover:translate-x-1 hover:translate-y-1 focus:outline-none transition duration-200"
-              required
-            />
-          </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl text-center">Send us a message</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-6">
+              <div className="text-start">
+                <Label htmlFor="name" className="text-sm font-medium">Name</Label>
+                <Input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  placeholder="Your name" 
+                  className="mt-1" 
+                  required 
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-lg font-semibold text-start text-black"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full p-3 border border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] rounded-lg focus:shadow-none hover:shadow-none hover:translate-x-1 hover:translate-y-1 focus:outline-none transition duration-200"
-              required
-            />
-          </div>
+              <div className="text-start">
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  placeholder="your.email@example.com" 
+                  className="mt-1" 
+                  required 
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="message"
-              className="block text-lg font-semibold text-start text-black"
-            >
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              className="w-full p-3 border border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] rounded-lg focus:shadow-none hover:shadow-none hover:translate-x-1 hover:translate-y-1 focus:outline-none transition duration-200"
-              required
-            ></textarea>
-          </div>
+              <div className="text-start">
+                <Label htmlFor="message" className="text-sm font-medium">Message</Label>
+                <Textarea 
+                  id="message" 
+                  name="message" 
+                  placeholder="Your message" 
+                  className="mt-1" 
+                  rows={5} 
+                  required
+                ></Textarea>
+              </div>
 
-          <div className="flex justify-center">
-            <Button type="submit" className="w-full sm:text-lg font-semibold uppercase">
-              Send Message
-            </Button>
-          </div>
-        </form>
+              <Button
+                type="submit"
+                className="w-full"
+              >
+                Send Message
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );
-}
+};
 
-export default Contact
+export default Contact;

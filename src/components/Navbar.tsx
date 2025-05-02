@@ -19,121 +19,118 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../components/ui/sheet";
+import Logo from "./Logo";
 
-
+const NAV_LINKS = [
+  { label: "About", href: "#about" },
+  { label: "Services", href: "#service" },
+  { label: "Contact", href: "#contact" },
+];
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const isWorkPage = location.pathname === "/work";
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-white shadow-[1px_2px_0_0_rgba(0,0,0,1)]">
-      <div className="flex justify-between items-center xl:px-20 py-4 px-4">
-        <h1 className="text-black font-bold text-xl border-2 rounded border-black px-4 py-2 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-          TestFlow
-        </h1>
 
-        <div className="xl:flex space-x-2 hidden">
-          <Link to="/" className="text-black font-semibold px-4 py-2">
+  const renderNavLinks = (isMobile = false) => (
+    <>
+      {!isWorkPage &&
+        NAV_LINKS.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className={`text-neutral-700 hover:text-neutral-900 transition-colors ${
+              isMobile ? "text-lg py-2" : "text-sm"
+            } px-4`}
+          >
+            {link.label}
+          </a>
+        ))}
+
+      {!isWorkPage && (
+        <Button
+          onClick={() => navigate("/work")}
+          className={`${isMobile ? "w-full mt-2" : ""}`}
+          variant="default"
+        >
+          Get Started
+        </Button>
+      )}
+
+      {isWorkPage && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="default" 
+              className={isMobile ? "w-full mt-2" : ""}
+            >
+              Export
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-lg">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Export Flow Graph</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to save the current flow graph?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction>Export</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </>
+  );
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b">
+      <div className="flex justify-between items-center xl:px-20 px-6 py-4 max-w-7xl mx-auto">
+        <Logo />
+
+        {/* Desktop Navigation */}
+        <div className="hidden xl:flex items-center space-x-1">
+          <Link 
+            to="/" 
+            className="text-neutral-700 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+          >
             Home
           </Link>
-          <a href={isWorkPage ? "/" : "#docs"} className="text-black font-semibold px-4 py-2">
+          <a
+            href={isWorkPage ? "/" : "#docs"}
+            className="text-neutral-700 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+          >
             Docs
           </a>
-
-          {isWorkPage && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button>Export</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure to save the flow graph ?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction>Continue</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-
-          {!isWorkPage && (
-            <>
-              <a href="#about" className="text-black font-semibold px-4 py-2">
-                About
-              </a>
-              <a href="#service" className="text-black font-semibold px-4 py-2">
-                Service
-              </a>
-              <a href="#contact" className="text-black font-semibold px-4 py-2">
-                Contact
-              </a>
-              <Button onClick={() => navigate("/work")}>Get Started!</Button>
-            </>
-          )}
+          {renderNavLinks(false)}
         </div>
 
+        {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="neutral" className="xl:hidden">
-              <Menu />
+            <Button className="xl:hidden" variant="ghost" size="icon">
+              <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="text-2xl">CodeFlow</SheetTitle>
+              <SheetTitle className="text-xl font-medium">CodeFlow</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col mt-5 items-center justify-center gap-5 xl:hidden space-x-2">
-              <a href="#home" className="text-black text-xl font-semibold px-4 py-2">
+            <div className="flex flex-col mt-6 gap-3">
+              <Link
+                to="/"
+                className="text-neutral-700 hover:text-neutral-900 transition-colors text-lg px-4 py-2"
+              >
                 Home
-              </a>
-              <a href="#docs" className="text-black text-xl font-semibold px-4 py-2">
+              </Link>
+              <a
+                href={isWorkPage ? "/" : "#docs"}
+                className="text-neutral-700 hover:text-neutral-900 transition-colors text-lg px-4 py-2"
+              >
                 Docs
               </a>
-
-              {isWorkPage && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button>Export</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure to save the flow graph ?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-
-              {!isWorkPage && (
-                <>
-                  <a href="#about" className="text-black text-xl font-semibold px-4 py-2">
-                    About
-                  </a>
-                  <a href="#service" className="text-black text-xl font-semibold px-4 py-2">
-                    Service
-                  </a>
-                  <a href="#contact" className="text-black text-xl font-semibold px-4 py-2">
-                    Contact
-                  </a>
-                  <Button className="w-full" onClick={() => navigate("/work")}>
-                    Get Started!
-                  </Button>
-                </>
-              )}
+              {renderNavLinks(true)}
             </div>
           </SheetContent>
         </Sheet>

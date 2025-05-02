@@ -5,18 +5,26 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 
-type FAQ = {
-    question : string,
-    answer: string,
-    index: number
-}
+type FaQAccordionProps = {
+  question: string;
+  answer: string;
+  index: number;
+};
 
-const FaQAccordion = (props : FAQ) => {
+const FaQAccordion = ({ question, answer, index }: FaQAccordionProps) => {
   return (
-    <Accordion className="xl:w-[500px]" type="single" collapsible key={props.index}>
-      <AccordionItem value={`item-${props.index}`}>
-        <AccordionTrigger className="text-white tex-sm">{props.question}</AccordionTrigger>
-        <AccordionContent>{props.answer}</AccordionContent>
+    <Accordion 
+      type="single" 
+      collapsible 
+      className="border border-neutral-200 rounded-lg overflow-hidden bg-white shadow-sm"
+    >
+      <AccordionItem value={`item-${index}`} className="border-b-0">
+        <AccordionTrigger className="px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 hover:no-underline">
+          {question}
+        </AccordionTrigger>
+        <AccordionContent className="px-4 pb-4 text-neutral-600">
+          {answer}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );

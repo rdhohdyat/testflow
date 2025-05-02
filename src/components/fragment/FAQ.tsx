@@ -1,12 +1,12 @@
 import FaQAccordion from "../FaQAccordion";
 
-type FAQ = {
+type FAQItem = {
   question: string;
   answer: string;
 };
 
 const FAQ = () => {
-  const faqs: FAQ[] = [
+  const faqs: FAQItem[] = [
     {
       question: "What is a Control Flow Graph (CFG)?",
       answer:
@@ -18,7 +18,7 @@ const FAQ = () => {
         "CodeFlow is a feature in our application that visually represents the control flow of a program, helping developers understand and analyze their code.",
     },
     {
-      question: "How does the application generate a CFG ?",
+      question: "How does the application generate a CFG?",
       answer:
         "The application parses the source code and identifies control structures like loops, conditions, and function calls to construct the graph.",
     },
@@ -48,7 +48,7 @@ const FAQ = () => {
         "Yes, the nodes and edges in the graph are interactive, allowing you to explore different parts of your program's flow in detail.",
     },
     {
-      question: "What is the difference between Control Flow Graph?",
+      question: "What is the difference between Control Flow Graph and Data Flow Graph?",
       answer:
         "A Control Flow Graph focuses on the order of execution, while a Data Flow Graph emphasizes the flow of data between operations.",
     },
@@ -58,20 +58,24 @@ const FAQ = () => {
         "Yes, the application integrates with static analysis tools to enhance the insights provided by the Control Flow Graph.",
     },
   ];
+
   return (
-    <section className="py-20  w-full container flex flex-col justify-center items-center">
-      <h2 className="text-3xl font-bold text-center mb-8 text-black border-b-4 border-black inline-block">
-        Frequently Asked Questions
-      </h2>
-      <div className="grid  sm:grid-cols-2 gap-5">
-        {faqs.map((faq, index) => (
-          <FaQAccordion
-            key={index}
-            question={faq.question}
-            answer={faq.answer}
-            index={index}
-          />
-        ))}
+    <section className="py-20 container bg-white">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-3xl font-semibold text-center mb-12 text-neutral-900">
+          Frequently Asked Questions
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          {faqs.map((faq, index) => (
+            <FaQAccordion
+              key={index}
+              question={faq.question}
+              answer={faq.answer}
+              index={index}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

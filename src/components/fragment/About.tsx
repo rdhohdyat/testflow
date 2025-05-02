@@ -1,40 +1,44 @@
+import { Card, CardContent } from "../ui/card";
+import coding from "../../assets/coding.svg"; // ganti dengan ilustrasi yang sesuai
+
 const About = () => {
   return (
-    <section id="about" className="py-20 xl:px-80 container text-center">
-      <h2 className="text-3xl font-bold text-center mb-8 text-black border-b-4 border-black inline-block">
-        About Us
-      </h2>
-      <div className="flex flex-col text-sm xl:text-base gap-5 rounded-lg text-black bg-white border-2 border-black p-8 shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-        <p className="text-center">
-          We are a team of developers dedicated to providing a powerful platform
-          for{" "}
-          <span className="text-main font-semibold">
-            code visualization and analysis
-          </span>
-          . <br />
-          Our solution enables developers to seamlessly generate and explore{" "}
-          <span className="text-main font-semibold">
-            Control Flow Graphs (CFG)
-          </span>
-          , helping them understand program structure with greater clarity.
-        </p>
-        <p className="text-center">
-          Our mission is to simplify the process of analyzing code logic and
-          execution paths. We offer intuitive tools for{" "}
-          <span className="text-main font-semibold">
-            visualizing control flow graphs
-          </span>
-          ,{" "}
-          <span className="text-main font-semibold">
-            generating execution paths
-          </span>
-          , and{" "}
-          <span className="text-main font-semibold">evaluating test cases</span>
-          , empowering developers to ensure reliable and efficient code.
-        </p>
+    <section id="about" className="py-20 container">
+      <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
+        {/* Text Section */}
+        <div className="flex-1">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-3">
+            About TestFlow
+          </h2>
+          <p className="text-muted-foreground mb-6 text-base md:text-lg">
+            Empowering developers with visual tools to understand and optimize code logic.
+          </p>
+
+          <Card className="bg-background border text-left">
+            <CardContent className="px-6 md:px-10 py-8 flex flex-col gap-6 text-neutral-700 text-base leading-relaxed">
+              <p>
+                <span className="font-medium text-neutral-900">TestFlow</span> is a developer-focused platform designed to simplify code logic analysis through clear and interactive{" "}
+                <span className="text-primary font-medium">Control Flow Graphs</span>. Our visual tools help you break down complex logic into understandable segments.
+              </p>
+
+              <p>
+                From code comprehension to test case exploration, our mission is to provide tools that make your debugging and optimization process more efficient.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Image Section */}
+        <div className="flex-1">
+          <img
+            src={coding}
+            alt="Control Flow Graph Illustration"
+            className="w-full max-w-md mx-auto drop-shadow-sm rounded-xl"
+          />
+        </div>
       </div>
     </section>
   );
-}
+};
 
-export default About
+export default About;

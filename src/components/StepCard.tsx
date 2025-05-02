@@ -1,20 +1,26 @@
-type Step = {
+import { Card, CardContent } from "./ui/card";
+
+type StepCardProps = {
   icon: string;
   title: string;
   description: string;
 };
 
-const StepCard = (props : Step) => {
+const StepCard = ({ icon, title, description }: StepCardProps) => {
   return (
-    <div className="flex items-center gap-5 border-2  border-border  shadow-light p-2 rounded-lg px-4">
-      <div className="flex justify-center items-center p-2 text-2xl font-bold rounded-full border-2  border-border  shadow-light h-12 w-12">
-        {props.icon}
-      </div>
-      <div>
-        <h1 className="font-semibold text-lg xl:text-xl">{props.title}</h1>
-        <p className="text-sm">{props.description}</p>
-      </div>
-    </div>
+    <Card className="bg-white shadow-sm border border-neutral-200 hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
+          <div className="flex justify-center items-center p-2 text-2xl rounded-full bg-neutral-100 h-12 w-12 flex-shrink-0">
+            {icon}
+          </div>
+          <div>
+            <h3 className="font-medium text-lg text-neutral-900">{title}</h3>
+            <p className="text-sm text-neutral-600 mt-1">{description}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

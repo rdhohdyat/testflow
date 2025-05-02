@@ -26,7 +26,7 @@ import {
 import TooltipComponent from "../components/TooltipComponent";
 
 import "@xyflow/react/dist/style.css";
-import { initialEdges, initialNodes, nodeTypes } from "../data/node";
+import { nodeTypes } from "../data/node";
 import { useCodeStore } from "../store/CodeStore";
 import { useMemo } from "react";
 
@@ -110,12 +110,12 @@ function WorkFlowPage() {
             <TooltipComponent information="Results of the test cases used">
               <div className="mt-5 border-t border-black pt-2 text-start">
                 <h2 className="font-bold">Evaluation Result:</h2>
-                {/* <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600">
                 No test case evaluated yet
-              </p> */}
-                <p className=" text-gray-600">
+              </p>
+                {/* <p className=" text-gray-600">
                   5 pass through path 2
-                </p>
+                </p> */}
               </div>
             </TooltipComponent>
           </div>

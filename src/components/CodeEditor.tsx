@@ -106,7 +106,7 @@ function CodeEditor() {
       <h1 className="xl:text-lg font-bold">Type Your Python Code Here</h1>
       <div ref={editorRef} className="h-[150px] xl:h-full -ml-8 rounded-lg border-0 border-gray-300"></div>
       <div className="flex gap-2 border-t border-gray-300 pt-2">
-        <Button variant="neutral" onClick={() => monacoEditorRef.current?.setValue("")}>
+        <Button variant="outline" onClick={() => monacoEditorRef.current?.setValue("")}>
           Clear Code
         </Button>
         <Button className="w-full" onClick={handleGenerateCFG}>

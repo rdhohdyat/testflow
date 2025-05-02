@@ -1,15 +1,15 @@
+import { Card } from "../ui/card";
 import FlowChart from "../FlowGraph";
 import StepCard from "../StepCard";
 
-type Steps = {
+type Step = {
   title: string;
   description: string;
   icon: string;
 };
 
 const Docs = () => {
-
-  const steps: Steps[] = [
+  const steps: Step[] = [
     {
       title: "Transform Python Code to AST",
       description:
@@ -49,22 +49,31 @@ const Docs = () => {
   ];
 
   return (
-    <section id="docs" className="py-20 xl:px-60 container text-center">
-      <h2 className="text-3xl text-center font-bold  mb-8 text-black border-b-4 border-black inline-block">
-        How TestFlow Work?
-      </h2>
-      <div className="xl:flex gap-5 text-start">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1  gap-5">
-          {steps.map((step) => (
-            <StepCard
-              icon={step.icon}
-              title={step.title}
-              description={step.description}
-            />
-          ))}
-        </div>
-        <div className="border-2  border-border mt-5 xl:mt-0 shadow-light  h-[700px] xl:w-[800px] rounded-lg">
-          <FlowChart />
+    <section id="docs" className="py-20 container bg-neutral-50">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-semibold text-center mb-10 text-neutral-900">
+          How CodeFlow Works
+        </h2>
+        
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+          {/* Step cards column */}
+          <div className="xl:col-span-5 space-y-4">
+            {steps.map((step, index) => (
+              <StepCard
+                key={index}
+                icon={step.icon}
+                title={step.title}
+                description={step.description}
+              />
+            ))}
+          </div>
+          
+          {/* FlowChart column */}
+          <div className="xl:col-span-7">
+            <Card className="p-4 h-full shadow-sm overflow-hidden bg-white border border-neutral-200">
+              <FlowChart />
+            </Card>
+          </div>
         </div>
       </div>
     </section>
