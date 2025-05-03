@@ -22,13 +22,12 @@ function CodeEditor() {
   else:
     return "Odd"`,
       language: "python",
-      theme: "vs-light", // Dark theme for better contrast
-      fontSize: 14,
+      theme: "vs-light", 
+      fontSize: 13,
       automaticLayout: true,
       minimap: { enabled: true },
       scrollBeyondLastLine: false,
       roundedSelection: true,
-      padding: { top: 8, bottom: 8 },
     });
 
     monacoEditorRef.current = editor;

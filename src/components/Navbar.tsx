@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Menu } from "lucide-react";
+import ExportDialog from "./ExportDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,28 +59,7 @@ export const Navbar = () => {
       )}
 
       {isWorkPage && (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button 
-              variant="default" 
-              className={isMobile ? "w-full mt-2" : ""}
-            >
-              Export
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-lg">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Export Flow Graph</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to save the current flow graph?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Export</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <ExportDialog/>
       )}
     </>
   );

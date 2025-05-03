@@ -63,7 +63,6 @@ function WorkFlowPage() {
     <div className="bg-neutral-50 min-h-screen">
       <Navbar />
 
-      {/* Desktop Layout */}
       <div className="hidden xl:block px-16 pt-20 pb-6">
         <div className="flex items-center justify-between my-4">
           <Badge variant="outline" className="px-3 py-1">
@@ -72,6 +71,13 @@ function WorkFlowPage() {
               <span>Server Connected</span>
             </div>
           </Badge>
+
+          {/* <Badge variant="outline" className="px-3 py-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <span>Server Connected</span>
+            </div>
+          </Badge> */}
         </div>
 
         <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] border rounded-lg bg-white shadow-sm">
@@ -82,7 +88,7 @@ function WorkFlowPage() {
           <ResizableHandle withHandle />
 
           <ResizablePanel minSize={40} defaultSize={50} className="bg-white">
-            <div className="p-4">
+            <div className="p-4 border-b">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <GitFork className="h-5 w-5 text-neutral-700" />
@@ -99,8 +105,13 @@ function WorkFlowPage() {
                 edges={edges} 
                 nodeTypes={nodeTypes}
                 fitView
+                fitViewOptions={{
+                  padding: 0.5, // Ubah nilai ini sesuai kebutuhan (0.1 - 1 biasanya cukup nyaman)
+                  maxZoom: 1,   // Batasi agar tidak terlalu ngezoom
+                  minZoom: 0.1, // Bisa ditambahkan agar tidak terlalu jauh juga
+                }}
               >
-                <Background variant={BackgroundVariant.Dots} gap={16} />
+                <Background variant={BackgroundVariant.Lines} gap={12} />
                 <Controls showInteractive={false} />
               
               </ReactFlow>
@@ -181,7 +192,7 @@ function WorkFlowPage() {
                         </TooltipComponent>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="max-h-[280px] overflow-y-auto space-y-2">
+                    <CardContent className="max-h-[160px] overflow-y-auto space-y-2 no-scroll">
                       {paths.map((item) => (
                         <div
                           key={item.id}
@@ -313,7 +324,7 @@ function WorkFlowPage() {
                     fitView
                   >
                     <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
-                    <Controls showInteractive={false} />
+                    <Controls  />
                   </ReactFlow>
                 </div>
               </CardContent>
