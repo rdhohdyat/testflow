@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { GitCompare, Info } from "lucide-react";
 
 const Home = () => {
   return (
@@ -26,6 +27,7 @@ const Home = () => {
               <TooltipTrigger asChild>
                 <Link to="/work">
                   <Button className="w-full sm:w-auto">
+                    <GitCompare className="h-4 w-4"/>
                     Launch Analyzer
                   </Button>
                 </Link>
@@ -38,6 +40,7 @@ const Home = () => {
 
           <a href="#docs" className="w-full sm:w-auto">
             <Button variant="outline" className="w-full sm:w-auto">
+              <Info className="w-4 h-4"/>
               Learn More
             </Button>
           </a>

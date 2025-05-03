@@ -3,6 +3,7 @@ import * as monaco from "monaco-editor";
 import { Button } from "./ui/button";
 import { useToast } from "../hooks/use-toast";
 import { useCodeStore } from "../store/CodeStore";
+import { Code2, Trash2, GitCompare } from "lucide-react";
 
 function CodeEditor() {
   const { toast } = useToast();
@@ -21,9 +22,13 @@ function CodeEditor() {
   else:
     return "Odd"`,
       language: "python",
-      theme: "vs-light",
-      fontSize: 15,
+      theme: "vs-light", // Dark theme for better contrast
+      fontSize: 14,
       automaticLayout: true,
+      minimap: { enabled: true },
+      scrollBeyondLastLine: false,
+      roundedSelection: true,
+      padding: { top: 8, bottom: 8 },
     });
 
     monacoEditorRef.current = editor;
@@ -45,6 +50,12 @@ function CodeEditor() {
     }
 
     setCode(codeInput);
+    
+    // Show loading toast
+    toast({
+      title: "Analyzing Code",
+      description: "Please wait while we generate the CFG...",
+    });
 
     try {
       const response = await fetch("http://127.0.0.1:8000/analyze", {
@@ -86,7 +97,8 @@ function CodeEditor() {
 
         toast({
           title: "Analysis Completed",
-          description: `Nodes: ${mappedNodes.length}, Edges: ${mappedEdges.length}`,
+          description: `Successfully processed ${mappedNodes.length} nodes and ${mappedEdges.length} edges.`,
+          variant: "default",
         });
       } else {
         throw new Error("Invalid response structure");
@@ -102,14 +114,34 @@ function CodeEditor() {
   };
 
   return (
-    <div className="min-h-full flex flex-col xl:justify-normal justify-between gap-4 p-4 xl:p-0">
-      <h1 className="xl:text-lg font-bold">Type Your Python Code Here</h1>
-      <div ref={editorRef} className="h-[150px] xl:h-full -ml-8 rounded-lg border-0 border-gray-300"></div>
-      <div className="flex gap-2 border-t border-gray-300 pt-2">
-        <Button variant="outline" onClick={() => monacoEditorRef.current?.setValue("")}>
-          Clear Code
+    <div className="min-h-full flex flex-col gap-4 p-4 xl:p-2 rounded-lg">
+      <div className="flex items-center justify-between border-b p-2">
+        <div className="flex items-center gap-2">
+          <Code2 className="h-5 w-5 text-neutral-700" />
+          <h1 className="font-semibold text-neutral-800">Code Editor</h1>
+        </div>
+        <div className="text-xs text-neutral-500">Enter your python code</div>
+      </div>
+      
+      <div 
+        ref={editorRef} 
+        className="h-[200px] xl:h-[60vh] -ml-6"
+      ></div>
+      
+      <div className="flex gap-3 pt-2">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => monacoEditorRef.current?.setValue("")}
+          className="flex items-center gap-1"
+        >
+          <Trash2 className="h-4 w-4" /> Clear
         </Button>
-        <Button className="w-full" onClick={handleGenerateCFG}>
+        <Button 
+          className="w-full bg-neutral-900 hover:bg-neutral-800"
+          onClick={handleGenerateCFG}
+        >
+          <GitCompare className="h-4 w-4"/>
           Generate CFG
         </Button>
       </div>

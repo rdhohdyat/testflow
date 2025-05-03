@@ -1,7 +1,8 @@
+import { useMemo } from "react";
 import { Navbar } from "../components/Navbar";
 import { Button } from "../components/ui/button";
-import { CircleCheck, CircleX } from "lucide-react";
-import { useState } from "react";
+import { CircleCheck, CircleX, Code, GitFork, ListChecks, ZoomIn } from "lucide-react";
+import { Input } from "../components/ui/input";
 import {
   ReactFlow,
   Background,
@@ -24,180 +25,385 @@ import {
   DrawerTrigger,
 } from "../components/ui/drawer";
 import TooltipComponent from "../components/TooltipComponent";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Progress } from "../components/ui/progress";
 
 import "@xyflow/react/dist/style.css";
 import { nodeTypes } from "../data/node";
 import { useCodeStore } from "../store/CodeStore";
-import { useMemo } from "react";
+
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "../components/ui/resizable";
 
 function WorkFlowPage() {
   const { params, setParams, edges, setEdges, nodes, setNodes } = useCodeStore();
 
-  const paths = [[1, 2, 3], [1, 2, 4, 5]]
+  // Example paths data
+  const paths = [
+    { id: 1, path: [1, 2, 3], status: "failed", coverage: 40 },
+    { id: 2, path: [1, 2, 4, 5], status: "passed", coverage: 60 },
+    { id: 3, path: [1, 3, 5, 6], status: "passed", coverage: 75 },
+  ];
 
   const cyclomaticComplexity = useMemo(() => {
-    const E = edges.length; // Gunakan edges dari store
-    const N = nodes.length; // Gunakan nodes dari store
+    const E = edges.length;
+    const N = nodes.length;
     return E - N + 2;
   }, [edges, nodes]);
 
+  const totalCoverage = useMemo(() => {
+    return paths.reduce((acc, path) => acc + path.coverage, 0) / paths.length;
+  }, [paths]);
+
   return (
-    <>
+    <div className="bg-neutral-50 min-h-screen">
       <Navbar />
-      <div className="xl:mt-24 mt-20 flex flex-col xl:flex-row gap-5 justify-between h-[85vh] xl:h-[80vh] p-5 relative">
-        <div className="w-full hidden xl:w-[600px] xl:h-full  bg-white absolute xl:relative bottom-0 left-0 right-0 xl:flex flex-col justify-between z-50">
-          <CodeEditor />
-        </div>
 
-        <div className="flex h-full justify-center items-center bg-main/10 w-full rounded-lg bg-white border-2 border-black shadow-[1px_3px_0_0_rgba(0,0,0,1)] p-6 text-center">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-          >
-            <Background variant={BackgroundVariant.Lines} />
-            <Controls />
-          </ReactFlow>
-        </div>
-
-        <div className="w-full xl:w-[700px] xl:flex flex-col justify-between hidden  ">
-          <TooltipComponent information="minimum number of paths to be tested">
-            <div className="border-b border-black pb-2 text-start">
-              <h2 className="text-lg font-bold">Cyclomatic Complexity</h2>
-              <p>Node : {nodes.length}</p>
-              <p>Edge : {edges.length}</p>
-              <p className="text-lg font-semibold">{edges.length} - {nodes.length} + 2 = {cyclomaticComplexity}</p>
+      {/* Desktop Layout */}
+      <div className="hidden xl:block px-16 pt-20 pb-6">
+        <div className="flex items-center justify-between my-4">
+          <Badge variant="outline" className="px-3 py-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Server Connected</span>
             </div>
-          </TooltipComponent>
-          <TooltipComponent information="All execution paths from FlowGraph">
-            <div className="mt-2 text-start">
-              <h1 className="text-lg font-bold">All Path of CFG</h1>
-              <div className="flex flex-col gap-2 text-lg h-[200px] overflow-y-scroll no-scroll">
-                {paths.map((items, index) => (
-                  <div key={index} className="flex items-center gap-2 justify-between">
-                    <div className="font-semibold">
-                      {items.join(" → ")}
+          </Badge>
+        </div>
+
+        <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] border rounded-lg bg-white shadow-sm">
+          <ResizablePanel minSize={20} defaultSize={25} className="border-r">
+            <CodeEditor />
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+
+          <ResizablePanel minSize={40} defaultSize={50} className="bg-white">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <GitFork className="h-5 w-5 text-neutral-700" />
+                  <h2 className="font-semibold">Control Flow Graph</h2>
+                </div>
+                <Badge variant="secondary">
+                  {nodes.length} Nodes • {edges.length} Edges
+                </Badge>
+              </div>
+            </div>
+            <div className="h-[65vh]">
+              <ReactFlow 
+                nodes={nodes} 
+                edges={edges} 
+                nodeTypes={nodeTypes}
+                fitView
+              >
+                <Background variant={BackgroundVariant.Dots} gap={16} />
+                <Controls showInteractive={false} />
+              
+              </ReactFlow>
+            </div>
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+
+          {/* Analysis Panel */}
+          <ResizablePanel minSize={20} defaultSize={25} className="border-l">
+            <div className="h-full flex flex-col">
+              <Tabs defaultValue="metrics" className="h-full flex flex-col">
+                <TabsList className="grid grid-cols-2 mx-4 mt-4">
+                  <TabsTrigger value="metrics">
+                    <div className="flex items-center gap-1">
+                      <ListChecks className="h-4 w-4" />
+                      <span>Metrics</span>
                     </div>
-                    {index == 1 ? (
-                      <CircleCheck className="text-green-500" />
-                    ) : (
-                      <CircleX className="text-red-500" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </TooltipComponent>
+                  </TabsTrigger>
+                  <TabsTrigger value="testcase">
+                    <div className="flex items-center gap-1">
+                      <Code className="h-4 w-4" />
+                      <span>Test Cases</span>
+                    </div>
+                  </TabsTrigger>
+                </TabsList>
 
-          <div className="border-t border-black">
-            <div className="mt-2 flex flex-col gap-2">
-              <div className="flex flex-col gap-2">
-                <h1 className="text-lg font-bold">
-                  Input Test Case {params?.join(", ")}
-                </h1>
-                {params?.map((param, index) => (
-                  <input
-                    key={index}
-                    className="w-full border border-black rounded p-2 focus:outline-none focus:ring-2 focus:ring-main"
-                    type="text"
-                    placeholder={`Enter test case for ${param}`}
-                  />
-                ))}
-              </div>
-              <Button>Evaluate Test Case</Button>
-              <Button variant="neutral">Clear Test Case</Button>
-            </div>
-            <TooltipComponent information="Results of the test cases used">
-              <div className="mt-5 border-t border-black pt-2 text-start">
-                <h2 className="font-bold">Evaluation Result:</h2>
-                <p className="text-sm text-gray-600">
-                No test case evaluated yet
-              </p>
-                {/* <p className=" text-gray-600">
-                  5 pass through path 2
-                </p> */}
-              </div>
-            </TooltipComponent>
-          </div>
-        </div>
+                <TabsContent value="metrics" className="flex-1 p-4 overflow-auto space-y-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        Cyclomatic Complexity
+                        <TooltipComponent information="Minimum number of paths to be tested">
+                          <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                        </TooltipComponent>
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        E - N + 2 = {cyclomaticComplexity}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pb-3">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex flex-col">
+                          <span className="text-neutral-500">Edges</span>
+                          <span className="font-medium">{edges.length}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-neutral-500">Nodes</span>
+                          <span className="font-medium">{nodes.length}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-        <div className="w-full   bg-white absolute xl:hidden bottom-0 left-0 right-0">
-          <Tabs defaultValue="account">
-            <TabsList className="w-full">
-              <TabsTrigger className="w-full" value="account">
-                Enter Code
-              </TabsTrigger>
-              <TabsTrigger className="w-full" value="password">
-                Analyze
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="account">
-              <CodeEditor />
-            </TabsContent>
-            <TabsContent value="password">
-              <div className="p-5">
-                <h1 className="text-lg font-bold text-center">
-                  All Path of CFG
-                </h1>
-                <div className="flex flex-col gap-2 text-lg items-center">
-                  {[...Array(5)].map((_, index) => (
-                    <div key={index} className="font-semibold">
-                      {"1 -> 2 -> 3 -> 4 -> 5 -> 6"}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          Coverage
+                          <TooltipComponent information="Code coverage from analyzed paths">
+                            <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                          </TooltipComponent>
+                        </div>
+                        <span className="text-sm font-normal">{totalCoverage.toFixed(0)}%</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pb-3">
+                      <Progress value={totalCoverage} className="h-2 mb-4" />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        Execution Paths
+                        <TooltipComponent information="All execution paths from FlowGraph">
+                          <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                        </TooltipComponent>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="max-h-[280px] overflow-y-auto space-y-2">
+                      {paths.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between p-2 rounded-md border bg-neutral-50 text-sm"
+                        >
+                          <div className="font-mono">{item.path.join(" → ")}</div>
+                          {item.status === "passed" ? (
+                            <CircleCheck className="text-green-500 h-4 w-4" />
+                          ) : (
+                            <CircleX className="text-red-500 h-4 w-4" />
+                          )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="testcase" className="flex-1 p-4 overflow-auto">
+                  <Card className="mb-4">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Input Test Case</CardTitle>
+                      <CardDescription>
+                        {params?.length > 0 ? `Parameters: ${params?.join(", ")}` : "No parameters detected"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {params?.length > 0 ? (
+                        params?.map((param, index) => (
+                          <div key={index} className="space-y-1">
+                            <label className="text-sm font-medium" htmlFor={`param-${index}`}>
+                              {param}:
+                            </label>
+                            <Input
+                              id={`param-${index}`}
+                              type="text"
+                              placeholder={`Enter value for ${param}`}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4 text-neutral-500">
+                          Generate CFG first to detect parameters
+                        </div>
+                      )}
+
+                      <div className="pt-2 space-y-2">
+                        <Button className="w-full" disabled={!params?.length}>
+                          Evaluate Test Case
+                        </Button>
+                        <Button variant="outline" className="w-full" disabled={!params?.length}>
+                          Clear Values
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        Evaluation Result
+                        <TooltipComponent information="Results of the test cases used">
+                          <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                        </TooltipComponent>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="p-4 rounded-md bg-neutral-50 border text-center">
+                        <p className="text-neutral-500 text-sm">No test case evaluated yet</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+
+      {/* Mobile Version */}
+      <div className="xl:hidden container pt-20 pb-6 px-4">
+        <h1 className="text-xl font-bold mb-4 text-neutral-900">Python CFG Analyzer</h1>
+        
+        <Tabs defaultValue="code" className="w-full">
+          <TabsList className="grid grid-cols-3 mb-4">
+            <TabsTrigger value="code">
+              <div className="flex items-center gap-1">
+                <Code className="h-4 w-4" />
+                <span>Editor</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="graph">
+              <div className="flex items-center gap-1">
+                <GitFork className="h-4 w-4" />
+                <span>Graph</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="analysis">
+              <div className="flex items-center gap-1">
+                <ListChecks className="h-4 w-4" />
+                <span>Analysis</span>
+              </div>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="code">
+            <Card>
+              <CardContent className="p-0">
+                <CodeEditor />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="graph">
+            <Card className="mb-4">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center justify-between">
+                  <div>Control Flow Graph</div>
+                  <Badge variant="secondary">
+                    {nodes.length} Nodes • {edges.length} Edges
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="h-[60vh]">
+                  <ReactFlow 
+                    nodes={nodes} 
+                    edges={edges} 
+                    nodeTypes={nodeTypes}
+                    fitView
+                  >
+                    <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
+                    <Controls showInteractive={false} />
+                  </ReactFlow>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="analysis">
+            <div className="space-y-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Cyclomatic Complexity</CardTitle>
+                  <CardDescription>
+                    {edges.length} - {nodes.length} + 2 = {cyclomaticComplexity}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Execution Paths</CardTitle>
+                </CardHeader>
+                <CardContent className="max-h-[200px] overflow-y-auto space-y-2">
+                  {paths.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-2 rounded-md border bg-neutral-50 text-sm"
+                    >
+                      <div className="font-mono">{item.path.join(" → ")}</div>
+                      {item.status === "passed" ? (
+                        <CircleCheck className="text-green-500 h-4 w-4" />
+                      ) : (
+                        <CircleX className="text-red-500 h-4 w-4" />
+                      )}
                     </div>
                   ))}
-                </div>
-              </div>
-
+                </CardContent>
+              </Card>
+              
               <Drawer>
-                <DrawerTrigger className="p-4 w-full">
+                <DrawerTrigger asChild>
                   <Button className="w-full">Input Test Case</Button>
                 </DrawerTrigger>
                 <DrawerContent>
                   <DrawerHeader>
-                    <div>
-                      <div className="mt-2 flex flex-col gap-2">
-                        <div className="flex flex-col gap-2">
-                          <h1 className="text-lg font-bold">
-                            Input Test Case {"(a, b)"}
-                          </h1>
-                          <input
-                            className="w-full border border-black rounded p-2 focus:outline-none focus:ring-2 focus:ring-main"
-                            type="text"
-                            placeholder="Enter test case a"
-                          />
-                          <input
-                            className="w-full border border-black rounded p-2 focus:outline-none focus:ring-2 focus:ring-main"
-                            type="text"
-                            placeholder="Enter test case b"
-                          />
+                    <h2 className="text-lg font-semibold">
+                      {params?.length > 0 
+                        ? `Input Test Case (${params.join(", ")})` 
+                        : "Input Test Case"}
+                    </h2>
+                    <div className="space-y-3 mt-4">
+                      {params?.length > 0 ? (
+                        params?.map((param, index) => (
+                          <div key={index} className="space-y-1">
+                            <label className="text-sm font-medium">
+                              {param}:
+                            </label>
+                            <Input placeholder={`Enter value for ${param}`} />
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4 text-neutral-500">
+                          Generate CFG first to detect parameters
                         </div>
-                      </div>
-                      <div className="mt-5 border-t border-black pt-2">
-                        <h2 className="text-sm font-semibold">
-                          Evaluation Result:
-                        </h2>
-                        {/* No test case evaluated yet. */}
-                        <p className="text-sm text-gray-600">
-                          2 , 3 pass through the path to 4
-                        </p>
-                      </div>
+                      )}
+                    </div>
+                    
+                    <div className="mt-6 p-4 border rounded-md bg-neutral-50">
+                      <h3 className="text-sm font-medium mb-1">
+                        Evaluation Result:
+                      </h3>
+                      <p className="text-sm text-neutral-500">
+                        No test case evaluated yet
+                      </p>
                     </div>
                   </DrawerHeader>
-                  <DrawerFooter>
-                    <Button>Evaluate Test Case</Button>
-                    <DrawerClose>
-                      <Button variant="neutral" className="w-full">
-                        Clear Test Case
+                  <DrawerFooter className="gap-2">
+                    <Button disabled={!params?.length}>Evaluate Test Case</Button>
+                    <DrawerClose asChild>
+                      <Button variant="outline" className="w-full">
+                        Close
                       </Button>
                     </DrawerClose>
                   </DrawerFooter>
                 </DrawerContent>
               </Drawer>
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </>
+    </div>
   );
 }
 

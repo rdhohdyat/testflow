@@ -1,29 +1,29 @@
-import React from "react"
+import React from "react";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from "../components/ui/tooltip"
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
-type TooltipProps = {
-    children : React.ReactNode,
-    information : string
+interface TooltipComponentProps {
+  children: React.ReactNode;
+  information: string;
 }
 
-const TooltipComponent = ({ children, information }: TooltipProps) => {
-    return (
-        <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            {children}
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{information}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    )
-}
+const TooltipComponent = ({ children, information }: TooltipComponentProps) => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent className="bg-neutral-900 text-neutral-50 border-0 p-2 text-xs max-w-xs">
+          <p>{information}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
-export default TooltipComponent
+export default TooltipComponent;

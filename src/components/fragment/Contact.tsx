@@ -3,12 +3,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Send } from "lucide-react";
 
 const Contact = () => {
   return (
     <section
       id="contact"
-      className="container py-20 px-6 bg-neutral-50"
+      className="container py-20 px-6 bg-neutral-50 rounded-xl"
     >
       <div className="max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-semibold mb-4 text-neutral-900">
@@ -64,6 +65,7 @@ const Contact = () => {
                 type="submit"
                 className="w-full"
               >
+                <Send/>
                 Send Message
               </Button>
             </form>
