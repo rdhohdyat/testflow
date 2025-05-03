@@ -38,11 +38,12 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "../components/ui/resizable";
+import ServerStatus from "../components/ServerStatus";
+
 
 function WorkFlowPage() {
   const { params, setParams, edges, setEdges, nodes, setNodes } = useCodeStore();
 
-  // Example paths data
   const paths = [
     { id: 1, path: [1, 2, 3], status: "failed", coverage: 40 },
     { id: 2, path: [1, 2, 4, 5], status: "passed", coverage: 60 },
@@ -65,19 +66,7 @@ function WorkFlowPage() {
 
       <div className="hidden xl:block px-16 pt-20 pb-6">
         <div className="flex items-center justify-between my-4">
-          <Badge variant="outline" className="px-3 py-1">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Server Connected</span>
-            </div>
-          </Badge>
-
-          {/* <Badge variant="outline" className="px-3 py-1">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span>Server Connected</span>
-            </div>
-          </Badge> */}
+         <ServerStatus/>
         </div>
 
         <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] border rounded-lg bg-white shadow-sm">
@@ -101,14 +90,15 @@ function WorkFlowPage() {
             </div>
             <div className="h-[65vh]">
               <ReactFlow 
+            
                 nodes={nodes} 
                 edges={edges} 
                 nodeTypes={nodeTypes}
                 fitView
                 fitViewOptions={{
-                  padding: 0.5, // Ubah nilai ini sesuai kebutuhan (0.1 - 1 biasanya cukup nyaman)
-                  maxZoom: 1,   // Batasi agar tidak terlalu ngezoom
-                  minZoom: 0.1, // Bisa ditambahkan agar tidak terlalu jauh juga
+                  padding: 0.5, 
+                  maxZoom: 1,   
+                  minZoom: 0.1,
                 }}
               >
                 <Background variant={BackgroundVariant.Lines} gap={12} />
@@ -139,7 +129,7 @@ function WorkFlowPage() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="metrics" className="flex-1 p-4 overflow-auto space-y-4">
+                <TabsContent value="metrics" className="flex-1 p-4 max-h-[70vh] overflow-y-auto space-y-4">
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base flex items-center gap-2">
@@ -192,7 +182,7 @@ function WorkFlowPage() {
                         </TooltipComponent>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="max-h-[160px] overflow-y-auto space-y-2 no-scroll">
+                    <CardContent className="space-y-2">
                       {paths.map((item) => (
                         <div
                           key={item.id}
@@ -210,8 +200,8 @@ function WorkFlowPage() {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="testcase" className="flex-1 p-4 overflow-auto">
-                  <Card className="mb-4">
+                <TabsContent value="testcase" className="flex-1 p-4 max-h-[70vh] overflow-y-auto">
+                  <Card className="mb-4 overflow-y-auto">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base">Input Test Case</CardTitle>
                       <CardDescription>

@@ -12,7 +12,7 @@ const Contact = () => {
       className="container py-20 px-6 bg-neutral-50 rounded-xl"
     >
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-semibold mb-4 text-neutral-900">
+        <h2 className="text-3xl font-bold mb-4 text-neutral-900">
           Contact Us
         </h2>
         <p className=" mb-8 text-neutral-600">

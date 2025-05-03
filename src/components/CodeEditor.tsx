@@ -73,7 +73,6 @@ function CodeEditor() {
       }
 
       if (data.nodes && data.edges) {
-        // Map nodes and edges to the required format
         const mappedNodes = data.nodes.map((node:any) => ({
           id: node.id,
           type: node.type || "default",
@@ -86,11 +85,11 @@ function CodeEditor() {
           source: edge.source,
           target: edge.target,
           label: edge.label || "",
+          type: "straight",
           markerEnd: edge.markerEnd || { type: "arrowclosed", color: "#000000" },
           style: edge.style || { strokeWidth: 2, stroke: "#000000" },
         }));
 
-        // Save mapped data to state
         setNodes(mappedNodes);
         setEdges(mappedEdges);
 
@@ -106,7 +105,7 @@ function CodeEditor() {
       toast({
         title: "Error",
         variant: "destructive",
-        description: `Something went wrong: ${error.message}`,
+        description: `Something went wrong`,
       });
       console.error(error);
     }

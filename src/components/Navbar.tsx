@@ -3,17 +3,6 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 import ExportDialog from "./ExportDialog";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../components/ui/alert-dialog";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -69,7 +58,6 @@ export const Navbar = () => {
       <div className="flex justify-between items-center xl:px-20 px-6 py-4 max-w-7xl mx-auto">
         <Logo />
 
-        {/* Desktop Navigation */}
         <div className="hidden xl:flex items-center space-x-1">
           <Link 
             to="/" 
@@ -86,7 +74,6 @@ export const Navbar = () => {
           {renderNavLinks(false)}
         </div>
 
-        {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild>
             <Button className="xl:hidden" variant="outline" size="icon">
