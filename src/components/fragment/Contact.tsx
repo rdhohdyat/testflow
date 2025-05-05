@@ -9,13 +9,13 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className="container py-20 px-6 bg-neutral-50 rounded-xl"
+      className="container py-20 px-6 bg-neutral-50 dark:bg-black rounded-xl"
     >
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-4 text-neutral-900">
+        <h2 className="text-3xl font-bold mb-4 text-neutral-900 dark:text-white">
           Contact Us
         </h2>
-        <p className=" mb-8 text-neutral-600">
+        <p className=" mb-8 text-neutral-600 dark:text-white">
           Have any questions or feedback? We would love to hear from you!
         </p>
 

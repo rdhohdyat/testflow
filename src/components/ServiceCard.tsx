@@ -12,7 +12,7 @@ const ServiceCard = ({ title, description, icon }: ServiceCardProps) => {
       <CardHeader>
         <div className="flex items-center gap-3 text-start">
           {icon && <div className="text-primary rounded p-5 shadow border">{icon}</div>}
-          <CardTitle className="text-lg font-semibold text-neutral-900">
+          <CardTitle className="text-lg font-semibold text-neutral-900 dark:text-white">
             {title}
           </CardTitle>
         </div>

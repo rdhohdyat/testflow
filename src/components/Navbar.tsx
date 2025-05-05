@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from "../components/ui/sheet";
 import Logo from "./Logo";
+import { ModeToggle } from "./mode-toggle";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
@@ -29,7 +30,7 @@ export const Navbar = () => {
           <a
             key={link.href}
             href={link.href}
-            className={`text-neutral-700 hover:text-neutral-900 transition-colors ${
+            className={`text-neutral-700 hover:text-neutral-900 dark:text-neutral-100 transition-colors ${
               isMobile ? "py-2" : "text-sm"
             } px-4`}
           >
@@ -37,37 +38,27 @@ export const Navbar = () => {
           </a>
         ))}
 
-      {!isWorkPage && (
-        <Button
-          onClick={() => navigate("/work")}
-          className={`${isMobile ? "w-full mt-2" : ""}`}
-          variant="default"
-        >
-          Get Started
-        </Button>
-      )}
+      <ModeToggle />
 
-      {isWorkPage && (
-        <ExportDialog/>
-      )}
+      {isWorkPage && <ExportDialog />}
     </>
   );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b">
+    <nav className="fixed top-0 left-0 right-0 z-40 dark:bg-black bg-white shadow-sm border-b">
       <div className="flex justify-between items-center xl:px-20 px-6 py-4 max-w-7xl mx-auto">
         <Logo />
 
         <div className="hidden xl:flex items-center space-x-1">
-          <Link 
-            to="/" 
-            className="text-neutral-700 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+          <Link
+            to="/"
+            className="text-neutral-700 dark:text-neutral-100 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
           >
             Home
           </Link>
           <a
             href={isWorkPage ? "/" : "#docs"}
-            className="text-neutral-700 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+            className="text-neutral-700 dark:text-neutral-100 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
           >
             Docs
           </a>

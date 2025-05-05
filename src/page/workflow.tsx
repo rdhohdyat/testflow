@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Navbar } from "../components/Navbar";
 import { Button } from "../components/ui/button";
-import { CircleCheck, CircleX, Code, GitFork, ListChecks, ZoomIn } from "lucide-react";
+import { CircleCheck, CircleX, Code, GitFork, ListChecks } from "lucide-react";
 import { Input } from "../components/ui/input";
 import {
   ReactFlow,
@@ -61,7 +61,7 @@ function WorkFlowPage() {
   }, [paths]);
 
   return (
-    <div className="bg-neutral-50 min-h-screen">
+    <div className="bg-neutral-50 min-h-screen dark:bg-black">
       <Navbar />
 
       <div className="hidden xl:block px-16 pt-20 pb-6">
@@ -69,14 +69,14 @@ function WorkFlowPage() {
          <ServerStatus/>
         </div>
 
-        <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] border rounded-lg bg-white shadow-sm">
+        <ResizablePanelGroup direction="horizontal" className="min-h-[75vh] border rounded-lg bg-white dark:bg-black shadow-sm">
           <ResizablePanel minSize={20} defaultSize={25} className="border-r">
             <CodeEditor />
           </ResizablePanel>
 
           <ResizableHandle withHandle />
 
-          <ResizablePanel minSize={40} defaultSize={50} className="bg-white">
+          <ResizablePanel minSize={40} defaultSize={50} className="bg-white dark:bg-black">
             <div className="p-4 border-b">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -90,7 +90,6 @@ function WorkFlowPage() {
             </div>
             <div className="h-[65vh]">
               <ReactFlow 
-            
                 nodes={nodes} 
                 edges={edges} 
                 nodeTypes={nodeTypes}
@@ -98,11 +97,11 @@ function WorkFlowPage() {
                 fitViewOptions={{
                   padding: 0.5, 
                   maxZoom: 1,   
-                  minZoom: 0.1,
+                  minZoom: 0.7,
                 }}
               >
                 <Background variant={BackgroundVariant.Lines} gap={12} />
-                <Controls showInteractive={false} />
+                <Controls showInteractive={true} />
               
               </ReactFlow>
             </div>
@@ -135,7 +134,7 @@ function WorkFlowPage() {
                       <CardTitle className="text-base flex items-center gap-2">
                         Cyclomatic Complexity
                         <TooltipComponent information="Minimum number of paths to be tested">
-                          <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                          <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">?</span>
                         </TooltipComponent>
                       </CardTitle>
                       <CardDescription className="text-sm">
@@ -162,7 +161,7 @@ function WorkFlowPage() {
                         <div className="flex items-center gap-2">
                           Coverage
                           <TooltipComponent information="Code coverage from analyzed paths">
-                            <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                            <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">?</span>
                           </TooltipComponent>
                         </div>
                         <span className="text-sm font-normal">{totalCoverage.toFixed(0)}%</span>
@@ -178,7 +177,7 @@ function WorkFlowPage() {
                       <CardTitle className="text-base flex items-center gap-2">
                         Execution Paths
                         <TooltipComponent information="All execution paths from FlowGraph">
-                          <span className="text-xs bg-neutral-100 px-1 py-0.5 rounded">?</span>
+                          <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">?</span>
                         </TooltipComponent>
                       </CardTitle>
                     </CardHeader>
@@ -186,7 +185,7 @@ function WorkFlowPage() {
                       {paths.map((item) => (
                         <div
                           key={item.id}
-                          className="flex items-center justify-between p-2 rounded-md border bg-neutral-50 text-sm"
+                          className="flex items-center justify-between p-2 rounded-md border bg-neutral-50 dark:bg-neutral-700 text-sm"
                         >
                           <div className="font-mono">{item.path.join(" → ")}</div>
                           {item.status === "passed" ? (
@@ -340,9 +339,9 @@ function WorkFlowPage() {
                   {paths.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-2 rounded-md border bg-neutral-50 text-sm"
+                      className="flex items-center justify-between p-2 rounded-md border  bg-neutral-50 text-sm"
                     >
-                      <div className="font-mono">{item.path.join(" → ")}</div>
+                      <div className="font-mono dark:text-neutral-900">{item.path.join(" → ")}</div>
                       {item.status === "passed" ? (
                         <CircleCheck className="text-green-500 h-4 w-4" />
                       ) : (

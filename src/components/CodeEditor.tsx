@@ -8,21 +8,28 @@ import { Code2, Trash2, GitCompare } from "lucide-react";
 function CodeEditor() {
   const { toast } = useToast();
   const editorRef = useRef<HTMLDivElement | null>(null);
-  const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
+    null
+  );
 
   const { code, setCode, setParams, setNodes, setEdges } = useCodeStore();
 
   useEffect(() => {
     if (!editorRef.current) return;
 
+    const storedTheme = localStorage.getItem("vite-ui-theme");
+    const isDark = storedTheme === "dark";
+
     const editor = monaco.editor.create(editorRef.current, {
-      value: code || `def check_even_odd(n):
+      value:
+        code ||
+        `def check_even_odd(n):
   if n % 2 == 0:
     return "Even"
   else:
     return "Odd"`,
       language: "python",
-      theme: "vs-light", 
+      theme: isDark ? "vs-dark" : "vs-light",
       fontSize: 13,
       automaticLayout: true,
       minimap: { enabled: true },
@@ -49,8 +56,6 @@ function CodeEditor() {
     }
 
     setCode(codeInput);
-    
-    // Show loading toast
     toast({
       title: "Analyzing Code",
       description: "Please wait while we generate the CFG...",
@@ -73,20 +78,25 @@ function CodeEditor() {
       }
 
       if (data.nodes && data.edges) {
-        const mappedNodes = data.nodes.map((node:any) => ({
+        const mappedNodes = data.nodes.map((node: any) => ({
           id: node.id,
           type: node.type || "default",
           position: node.position || { x: 0, y: 0 },
           data: { label: node.data?.label || "Node" },
         }));
 
-        const mappedEdges = data.edges.map((edge:any) => ({
+        const mappedEdges = data.edges.map((edge: any) => ({
           id: edge.id,
           source: edge.source,
           target: edge.target,
+          type: edge.label == "loop back" ? "step" : "straight",
+          sourceHandle : edge.label == "loop back" ? "left-source" : "",
+          targetHandle: edge.label == "loop back" ? "left" : "",
           label: edge.label || "",
-          type: "straight",
-          markerEnd: edge.markerEnd || { type: "arrowclosed", color: "#000000" },
+          markerEnd: edge.markerEnd || {
+            type: "arrowclosed",
+            color: "#000000",
+          },
           style: edge.style || { strokeWidth: 2, stroke: "#000000" },
         }));
 
@@ -112,34 +122,32 @@ function CodeEditor() {
   };
 
   return (
-    <div className="min-h-full flex flex-col gap-4 p-4 xl:p-2 rounded-lg">
+    <div className="min-h-full flex flex-col gap-4 p-4 xl:p-2 rounded-lg dark:bg-black">
       <div className="flex items-center justify-between border-b p-2">
         <div className="flex items-center gap-2">
-          <Code2 className="h-5 w-5 text-neutral-700" />
-          <h1 className="font-semibold text-neutral-800">Code Editor</h1>
+          <Code2 className="h-5 w-5 text-neutral-700 dark:text-white" />
+          <h1 className="font-semibold text-neutral-800 dark:text-white">
+            Code Editor
+          </h1>
         </div>
-        <div className="text-xs text-neutral-500">Enter your python code</div>
+        <div className="text-xs text-neutral-500 dark:text-white">
+          Enter your python code
+        </div>
       </div>
-      
-      <div 
-        ref={editorRef} 
-        className="h-[200px] xl:h-[60vh] -ml-6"
-      ></div>
-      
+
+      <div ref={editorRef} className="h-[200px] xl:h-[60vh] -ml-6"></div>
+
       <div className="flex gap-3 pt-2">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={() => monacoEditorRef.current?.setValue("")}
           className="flex items-center gap-1"
         >
           <Trash2 className="h-4 w-4" /> Clear
         </Button>
-        <Button 
-          className="w-full bg-neutral-900 hover:bg-neutral-800"
-          onClick={handleGenerateCFG}
-        >
-          <GitCompare className="h-4 w-4"/>
+        <Button className="w-full" onClick={handleGenerateCFG}>
+          <GitCompare className="h-4 w-4" />
           Generate CFG
         </Button>
       </div>

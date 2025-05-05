@@ -8,15 +8,15 @@ const ServerStatus = () => {
     fetch("http://localhost:8000/ping")
       .then((res) => {
         if (res.ok) {
-          console.log("Server oke");
+          console.log("Server connected");
           setStatus(true);
         } else {
-          console.log("⚠️ Server tidak merespons dengan benar");
+          console.log("Server is not responding");
           setStatus(false);
         }
       })
       .catch((err) => {
-        console.log("❌ Gagal terhubung ke server:", err);
+        console.log("Server dicconnected:", err);
       });
   }, []);
 
@@ -33,7 +33,7 @@ const ServerStatus = () => {
         <Badge variant="outline" className="px-3 py-1">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-            <span>Server Connected</span>
+            <span>Server Disconnected</span>
           </div>
         </Badge>
       )}

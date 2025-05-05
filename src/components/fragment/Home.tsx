@@ -19,12 +19,12 @@ const Home = () => {
   return (
     <section className="container flex justify-center items-center mt-24 sm:mt-32 md:mt-44 px-6">
       <div className="w-full max-w-2xl text-center flex flex-col gap-6">
-        <h1 className="font-bold text-4xl md:text-5xl leading-tight text-neutral-900 tracking-tight">
+        <h1 className="font-bold text-4xl md:text-5xl leading-tight text-neutral-900 dark:text-white tracking-tight">
           Analyze and Visualize Your Code's Control Flow
         </h1>
 
-        <p className="text-base md:text-lg text-muted-foreground text-balance">
-          Easily transform your source code into <span className="text-neutral-900 font-medium">Control Flow Graphs</span>, 
+        <p className="text-base md:text-lg text-muted-foreground text-balance dark:text-white">
+          Easily transform your source code into <span className="text-neutral-900 dark:text-white font-medium">Control Flow Graphs</span>, 
           helping you detect logic issues, optimize paths, and understand structure — visually.
         </p>
 
