@@ -1,6 +1,6 @@
 import { Card } from "../ui/card";
 import docsImage from "../../assets/docs.svg";
-import StepCard from "../StepCard";
+import StepCard from "../step-card";
 import { ChartGantt, Code, Combine, GitCommitVertical, GitFork, Wallpaper } from "lucide-react";
 
 type Step = {

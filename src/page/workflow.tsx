@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../components/navbar";
 import { Code, GitFork, ListChecks } from "lucide-react";
 import {
   ReactFlow,
@@ -14,7 +14,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import TooltipComponent from "../components/TooltipComponent";
+import TooltipComponent from "../components/tooltip-component";
 import {
   Card,
   CardContent,
@@ -34,7 +34,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "../components/ui/resizable";
-import ServerStatus from "../components/ServerStatus";
+import ServerStatus from "../components/server-status";
 import PathList from "../components/path-list";
 import TestCase from "../components/test-case";
 

@@ -1,4 +1,4 @@
-import FaQAccordion from "../FaQAccordion";
+import FaQAccordion from "../faq-accordion";
 import faqIllustration from "../../assets/faq.svg"
 
 type FAQItem = {

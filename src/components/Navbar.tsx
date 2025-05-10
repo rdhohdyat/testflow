@@ -1,14 +1,14 @@
 import { Button } from "./ui/button";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import {useLocation, Link } from "react-router-dom";
 import { Menu } from "lucide-react";
-import ExportDialog from "./ExportDialog";
+import ExportDialog from "./export-dialog";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../components/ui/sheet";
+} from "./ui/sheet";
 import Logo from "./Logo";
 import { ModeToggle } from "./mode-toggle";
 
@@ -19,7 +19,6 @@ const NAV_LINKS = [
 ];
 
 export const Navbar = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const isWorkPage = location.pathname === "/work";
 

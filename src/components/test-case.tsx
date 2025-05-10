@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCodeStore } from "../store/CodeStore";
-import TooltipComponent from "./TooltipComponent";
+import TooltipComponent from "./tooltip-component";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -87,14 +87,13 @@ function TestCase() {
         return {
           ...item,
           passed: isSame ? true : item.passed,
+          testCase: testParams
         };
       });
 
 
       setPaths(updatedPaths)
 
-      console.log(paths[0].path);
-      console.log(resultText);
     } catch (error) {
       console.error("Error executing test case:", error);
     } finally {
@@ -166,7 +165,7 @@ function TestCase() {
             {resultText.length > 0 ? (
               <div className="font-mono">{resultText.join(" → ")}</div>
             ) : (
-              <p className="text-neutral-500 text-sm">Belum ada evaluasi</p>
+              <p className="text-neutral-500 text-sm">No result, input parameter.</p>
             )}
           </div>
         </CardContent>

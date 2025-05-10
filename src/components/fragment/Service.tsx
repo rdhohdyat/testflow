@@ -1,4 +1,4 @@
-import ServiceCard from "../ServiceCard";
+import ServiceCard from "../service-card";
 import flowGraphImage from "../../assets/flowgraph.svg"; // ilustrasi topik service
 import { GitFork, Layers, ClipboardCheck } from "lucide-react";
 

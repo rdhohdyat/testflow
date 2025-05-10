@@ -1,4 +1,4 @@
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../components/navbar";
 import FAQ from "../components/fragment/FAQ";
 import About from "../components/fragment/About";
 import Service from "../components/fragment/Service";

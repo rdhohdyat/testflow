@@ -72,14 +72,13 @@ function CodeEditor() {
       if (!response.ok) throw new Error("Failed to fetch data from server");
 
       const data = await response.json();
-
       console.log("Response from server:", data);
 
       if (data.execution_paths) {
         const paths = data.execution_paths.map((path) => ({
           path,
           passed: false,
-          test_case: null,
+          test_case: null
         }));
 
         setPaths(paths || []);

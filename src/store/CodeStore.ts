@@ -4,7 +4,7 @@ import { Node, Edge } from "@xyflow/react";
 type ExecutionPath = {
   path: string[];
   passed: boolean;
-  testCase: [];
+  testCase: any;
 };
 
 type CodeStore = {

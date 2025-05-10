@@ -3,7 +3,7 @@
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-  } from "../components/ui/accordion";
+  } from "./ui/accordion";
 
   type FaQAccordionProps = {
     question: string;

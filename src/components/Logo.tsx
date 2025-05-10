@@ -1,4 +1,4 @@
-const Logo = () => {
+export default function Logo(){
   return (
     <div className="flex items-center gap-3 text-neutral-900 dark:text-white">
       <svg
@@ -21,5 +21,3 @@ const Logo = () => {
     </div>
   );
 };
-
-export default Logo;
