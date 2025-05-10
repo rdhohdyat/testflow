@@ -12,7 +12,8 @@ function CodeEditor() {
     null
   );
 
-  const { code, setCode, setParams, setNodes, setEdges } = useCodeStore();
+  const { code, setPaths, setCode, setParams, setNodes, setEdges } =
+    useCodeStore();
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -71,7 +72,18 @@ function CodeEditor() {
       if (!response.ok) throw new Error("Failed to fetch data from server");
 
       const data = await response.json();
+
       console.log("Response from server:", data);
+
+      if (data.execution_paths) {
+        const paths = data.execution_paths.map((path) => ({
+          path,
+          passed: false,
+          test_case: null,
+        }));
+
+        setPaths(paths || []);
+      }
 
       if (data.parameters) {
         setParams(data.parameters[0]?.params || []);
@@ -82,7 +94,7 @@ function CodeEditor() {
           id: node.id,
           type: node.type || "default",
           position: node.position || { x: 0, y: 0 },
-          data: { label: node.data?.label || "Node" },
+          data: { label: node.data.label },
         }));
 
         const mappedEdges = data.edges.map((edge: any) => ({
@@ -90,8 +102,9 @@ function CodeEditor() {
           source: edge.source,
           target: edge.target,
           type: edge.label == "loop back" ? "step" : "straight",
-          sourceHandle : edge.label == "loop back" ? "left-source" : "",
+          sourceHandle: edge.label == "loop back" ? "left-source" : "",
           targetHandle: edge.label == "loop back" ? "left" : "",
+          animated: edge.label == "loop back" ? true : false,
           label: edge.label || "",
           markerEnd: edge.markerEnd || {
             type: "arrowclosed",

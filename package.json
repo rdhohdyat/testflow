@@ -27,7 +27,7 @@
     "@radix-ui/react-toast": "^1.2.11",
     "@radix-ui/react-tooltip": "^1.2.4",
     "@xyflow/react": "^12.3.6",
-    "canvg": "^4.0.2",
+    "canvg": "^4.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.9.4",
