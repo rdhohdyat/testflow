@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Navbar } from "../components/navbar";
 import { Code, GitFork, ListChecks } from "lucide-react";
 import {
@@ -6,6 +5,8 @@ import {
   Background,
   Controls,
   BackgroundVariant,
+  useNodesState,
+  useEdgesState,
 } from "@xyflow/react";
 import CodeEditor from "../components/code-editor";
 import {
@@ -14,20 +15,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import TooltipComponent from "../components/tooltip-component";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { Progress } from "../components/ui/progress";
 
 import "@xyflow/react/dist/style.css";
 import { nodeTypes } from "../data/node";
 import { useCodeStore } from "../store/CodeStore";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   ResizableHandle,
@@ -37,9 +30,85 @@ import {
 import ServerStatus from "../components/server-status";
 import PathList from "../components/path-list";
 import TestCase from "../components/test-case";
+import CoveragePath from "../components/coverage-path";
+import CylomaticComplexity from "../components/cylometic-complexity";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import TooltipComponent from "../components/tooltip-component";
 
 function WorkFlowPage() {
-  const { edges, nodes, paths } = useCodeStore();
+  const {
+    rawEdges,
+    rawNodes,
+    nodes: storeNodes,
+    edges: storeEdges,
+    triggerAnimation,
+  } = useCodeStore();
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodeCount, setNodeCount] = useState(0);
+  const [edgeCount, setEdgeCount] = useState(0);
+  const [initialRender, setInitialRender] = useState(true);
+
+  // Fungsi untuk menambahkan node secara bertahap dengan animasi
+  const animateNodesAndEdges = useCallback(() => {
+    // Reset state
+    setNodes([]);
+    setEdges([]);
+    setNodeCount(0);
+    setEdgeCount(0);
+
+    // Tentukan sumber data - gunakan rawNodes jika tersedia, jika tidak gunakan storeNodes
+    const sourceNodes = rawNodes && rawNodes.length > 0 ? rawNodes : storeNodes;
+    const sourceEdges = rawEdges && rawEdges.length > 0 ? rawEdges : storeEdges;
+
+    // Tambahkan nodes secara bertahap
+    if (sourceNodes && sourceNodes.length > 0) {
+      sourceNodes.forEach((node, index) => {
+        setTimeout(() => {
+          setNodes((prevNodes) => [...prevNodes, { ...node }]);
+          setNodeCount(index + 1);
+        }, index * 200); // Delay 150ms per node
+      });
+
+      // Tambahkan edges setelah semua node selesai di-render
+      const nodesDelay = sourceNodes.length * 150;
+      if (sourceEdges && sourceEdges.length > 0) {
+        setTimeout(() => {
+          sourceEdges.forEach((edge, index) => {
+            setTimeout(() => {
+              setEdges((prevEdges) => [...prevEdges, { ...edge }]);
+              setEdgeCount(index + 1);
+            }, index * 150); // Delay 100ms per edge
+          });
+        }, nodesDelay);
+      }
+    }
+  }, [rawNodes, rawEdges, storeNodes, storeEdges, setNodes, setEdges]);
+
+  // Jalankan animasi ketika triggerAnimation berubah
+  useEffect(() => {
+    if (triggerAnimation) {
+      animateNodesAndEdges();
+      setInitialRender(false);
+    }
+  }, [triggerAnimation, animateNodesAndEdges]);
+
+  // Handle initial render - load dari localStorage tanpa animasi
+  useEffect(() => {
+    if (initialRender && storeNodes.length > 0) {
+      setNodes(storeNodes);
+      setEdges(storeEdges);
+      setNodeCount(storeNodes.length);
+      setEdgeCount(storeEdges.length);
+      setInitialRender(false);
+    }
+  }, [initialRender, storeNodes, storeEdges, setNodes, setEdges]);
 
   const cyclomaticComplexity = useMemo(() => {
     const E = edges.length;
@@ -48,12 +117,6 @@ function WorkFlowPage() {
 
     return E - N + 2;
   }, [edges, nodes]);
-
-  const totalPassed = paths.filter((item) => item.passed).length;
-  const totalPaths = paths.length;
-  const percentage = (totalPassed / totalPaths) * 100;
-
-  const totalCoverage = percentage;
 
   return (
     <div className="bg-neutral-50 min-h-screen dark:bg-black">
@@ -86,7 +149,7 @@ function WorkFlowPage() {
                   <h2 className="font-semibold">Control Flow Graph</h2>
                 </div>
                 <Badge variant="secondary">
-                  {nodes.length} Nodes • {edges.length} Edges
+                  {nodeCount} Nodes • {edgeCount} Edges
                 </Badge>
               </div>
             </div>
@@ -95,6 +158,8 @@ function WorkFlowPage() {
                 nodes={nodes}
                 edges={edges}
                 nodeTypes={nodeTypes}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
                 fitView
                 fitViewOptions={{
                   padding: 0.5,
@@ -160,43 +225,8 @@ function WorkFlowPage() {
                       </div>
                     </CardContent>
                   </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          Coverage
-                          <TooltipComponent information="Code coverage from analyzed paths">
-                            <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">
-                              ?
-                            </span>
-                          </TooltipComponent>
-                        </div>
-                        <span className="text-sm font-normal">
-                          {totalCoverage.toFixed(0)}%
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pb-3">
-                      <Progress value={totalCoverage} className="h-2 mb-4" />
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        Execution Paths
-                        <TooltipComponent information="All execution paths from FlowGraph">
-                          <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">
-                            ?
-                          </span>
-                        </TooltipComponent>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <PathList />
-                    </CardContent>
-                  </Card>
+                  <CoveragePath />
+                  <PathList />
                 </TabsContent>
 
                 <TabsContent
