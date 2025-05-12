@@ -73,7 +73,7 @@ export const useCodeStore = create<CodeStore>((set) => ({
   },
   
   setTriggerAnimation: (timestamp) => {
-    // Tidak perlu disimpan di localStorage karena hanya trigger sementara
+     localStorage.setItem("triggerAnimation", JSON.stringify(timestamp));
     set({ triggerAnimation: timestamp });
   }
 }));

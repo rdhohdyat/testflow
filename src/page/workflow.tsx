@@ -20,7 +20,7 @@ import { Badge } from "../components/ui/badge";
 import "@xyflow/react/dist/style.css";
 import { nodeTypes } from "../data/node";
 import { useCodeStore } from "../store/CodeStore";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   ResizableHandle,
@@ -31,7 +31,6 @@ import ServerStatus from "../components/server-status";
 import PathList from "../components/path-list";
 import TestCase from "../components/test-case";
 import CoveragePath from "../components/coverage-path";
-import CylomaticComplexity from "../components/cylometic-complexity";
 import {
   Card,
   CardContent,
@@ -84,14 +83,13 @@ function WorkFlowPage() {
             setTimeout(() => {
               setEdges((prevEdges) => [...prevEdges, { ...edge }]);
               setEdgeCount(index + 1);
-            }, index * 150); // Delay 100ms per edge
+            }, index * 200); // Delay 100ms per edge
           });
         }, nodesDelay);
       }
     }
   }, [rawNodes, rawEdges, storeNodes, storeEdges, setNodes, setEdges]);
 
-  // Jalankan animasi ketika triggerAnimation berubah
   useEffect(() => {
     if (triggerAnimation) {
       animateNodesAndEdges();
@@ -109,14 +107,6 @@ function WorkFlowPage() {
       setInitialRender(false);
     }
   }, [initialRender, storeNodes, storeEdges, setNodes, setEdges]);
-
-  const cyclomaticComplexity = useMemo(() => {
-    const E = edges.length;
-
-    const N = nodes.length;
-
-    return E - N + 2;
-  }, [edges, nodes]);
 
   return (
     <div className="bg-neutral-50 min-h-screen dark:bg-black">
@@ -162,13 +152,12 @@ function WorkFlowPage() {
                 onEdgesChange={onEdgesChange}
                 fitView
                 fitViewOptions={{
-                  padding: 0.5,
-                  maxZoom: 1,
-                  minZoom: 0.7,
+                  maxZoom: 0.8,
+                  minZoom: 0.6,
                 }}
               >
-                <Background variant={BackgroundVariant.Lines} gap={12} />
-                <Controls showInteractive={true} />
+                <Background variant={BackgroundVariant.Dots} gap={12} />
+                <Controls />
               </ReactFlow>
             </div>
           </ResizablePanel>
@@ -209,18 +198,18 @@ function WorkFlowPage() {
                         </TooltipComponent>
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        E - N + 2 = {cyclomaticComplexity}
+                        E - N + 2 = {edgeCount - nodeCount + 2}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="pb-3">
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div className="flex flex-col">
                           <span className="text-neutral-500">Edges</span>
-                          <span className="font-medium">{edges.length}</span>
+                          <span className="font-medium">{edgeCount}</span>
                         </div>
                         <div className="flex flex-col">
                           <span className="text-neutral-500">Nodes</span>
-                          <span className="font-medium">{nodes.length}</span>
+                          <span className="font-medium">{nodeCount}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -240,7 +229,6 @@ function WorkFlowPage() {
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
-      {/* mobile version nanti disini */}
     </div>
   );
 }

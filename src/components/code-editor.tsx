@@ -13,14 +13,14 @@ function CodeEditor() {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const { 
-    code, 
-    setPaths, 
-    setCode, 
-    setParams, 
-    setNodes, 
-    setEdges, 
-    setTriggerAnimation 
+  const {
+    code,
+    setPaths,
+    setCode,
+    setParams,
+    setNodes,
+    setEdges,
+    setTriggerAnimation,
   } = useCodeStore();
 
   useEffect(() => {
@@ -125,7 +125,11 @@ function CodeEditor() {
           id: node.id,
           type: node.type || "default",
           position: node.position || { x: 0, y: 0 },
-          data: { label: node.data.label },
+          data: {
+            label: node.data.label,
+            tooltip: node.data.tooltip,
+            node_type: node.data.node_type,
+          },
         }));
 
         const mappedEdges = data.edges.map((edge: any) => ({
@@ -144,14 +148,18 @@ function CodeEditor() {
           style: edge.style || { strokeWidth: 2, stroke: "#000000" },
         }));
 
-        // Set di store - ini akan menyimpan ke localStorage dan juga menyiapkan data untuk animasi
         setNodes(mappedNodes);
         setEdges(mappedEdges);
         
-        // After successful data loading, trigger animation dengan delay kecil
         setTimeout(() => {
           setTriggerAnimation(Date.now());
         }, 100);
+
+        toast({
+          title: "Analysis Completed",
+          description: `Successfully processed CFG`,
+          variant: "default",
+        });
       } else {
         throw new Error("Invalid response structure");
       }
@@ -159,16 +167,10 @@ function CodeEditor() {
       toast({
         title: "Error",
         variant: "destructive",
-        description: `Something went wrong`,
+        description: `Something went wrong with your code`,
       });
-      console.error(error);
     } finally {
       setIsLoading(false);
-      toast({
-        title: "Analysis Completed",
-        description: `Successfully processed CFG`,
-        variant: "default",
-      });
     }
   };
 
