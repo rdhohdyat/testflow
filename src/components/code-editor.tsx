@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { useToast } from "../hooks/use-toast";
 import { useCodeStore } from "../store/CodeStore";
 import { Code2, Trash2, GitCompare, Loader2 } from "lucide-react";
+import path from "path";
 
 function CodeEditor() {
   const { toast } = useToast();
@@ -20,7 +21,10 @@ function CodeEditor() {
     setParams,
     setNodes,
     setEdges,
+    setCyclomaticComplexity,
     setTriggerAnimation,
+    setEdgeCount,
+    setNodeCount,
   } = useCodeStore();
 
   useEffect(() => {
@@ -52,7 +56,7 @@ function CodeEditor() {
   }, []);
 
   // Helper function to add a minimum delay to show loading
-  const withMinimumDelay = async (promise, minimumDelay = 1000) => {
+  const withMinimumDelay = async (promise: any, minimumDelay = 1000) => {
     const startTime = Date.now();
     const [result] = await Promise.all([
       promise,
@@ -97,7 +101,7 @@ function CodeEditor() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: codeInput }),
         }),
-        1500 // Minimum 1.5 seconds of loading state
+        1500
       );
 
       if (!response.ok) throw new Error("Failed to fetch data from server");
@@ -113,6 +117,12 @@ function CodeEditor() {
         }));
 
         setPaths(paths || []);
+        console.log(path)
+      }
+
+
+      if (data.cyclomatic_complexity) {
+        setCyclomaticComplexity(data.cyclomatic_complexity);
       }
 
       if (data.parameters) {
@@ -148,9 +158,17 @@ function CodeEditor() {
           style: edge.style || { strokeWidth: 2, stroke: "#000000" },
         }));
 
+        const filteredEdges = mappedEdges.filter(
+          (edge: any) => edge.label !== "True"
+        );
+
+        setEdgeCount(filteredEdges.length);
+        setNodeCount(mappedNodes.length);
+
+        console.log(filteredEdges.length);
         setNodes(mappedNodes);
         setEdges(mappedEdges);
-        
+
         setTimeout(() => {
           setTriggerAnimation(Date.now());
         }, 100);
@@ -158,16 +176,16 @@ function CodeEditor() {
         toast({
           title: "Analysis Completed",
           description: `Successfully processed CFG`,
-          variant: "default",
+          variant: "default"
         });
       } else {
-        throw new Error("Invalid response structure");
+        throw new Error(data.message);
       }
     } catch (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: `Something went wrong with your code`,
+        description: `${error}`,
       });
     } finally {
       setIsLoading(false);
@@ -175,10 +193,10 @@ function CodeEditor() {
   };
 
   return (
-    <div className="min-h-full flex flex-col gap-4 p-4 xl:p-2 rounded-lg dark:bg-black">
-      <div className="flex items-center justify-between border-b p-2">
+    <div className="flex flex-col min-h-full gap-4 p-4 rounded-lg xl:p-2 dark:bg-black">
+      <div className="flex items-center justify-between p-2 border-b">
         <div className="flex items-center gap-2">
-          <Code2 className="h-5 w-5 text-neutral-700 dark:text-white" />
+          <Code2 className="w-5 h-5 text-neutral-700 dark:text-white" />
           <h1 className="font-semibold text-neutral-800 dark:text-white">
             Code Editor
           </h1>
@@ -198,7 +216,7 @@ function CodeEditor() {
           disabled={isLoading}
           className="flex items-center gap-1"
         >
-          <Trash2 className="h-4 w-4" /> Clear
+          <Trash2 className="w-4 h-4" /> Clear
         </Button>
         <Button
           className="w-full"
@@ -207,12 +225,12 @@ function CodeEditor() {
         >
           {isLoading ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Generating...
             </>
           ) : (
             <>
-              <GitCompare className="h-4 w-4 mr-2" />
+              <GitCompare className="w-4 h-4 mr-2" />
               Generate CFG
             </>
           )}

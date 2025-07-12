@@ -47,21 +47,44 @@ function WorkFlowPage() {
     nodes: storeNodes,
     edges: storeEdges,
     triggerAnimation,
+    setNodeCount,
+    setEdgeCount,
+    nodeCount,
+    edgeCount,
   } = useCodeStore();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [nodeCount, setNodeCount] = useState(0);
-  const [edgeCount, setEdgeCount] = useState(0);
+
   const [initialRender, setInitialRender] = useState(true);
+
+  // Calculate and update node and edge counts
+  useEffect(() => {
+    // Only update counts when we have source data
+    const sourceNodes = rawNodes && rawNodes.length > 0 ? rawNodes : storeNodes;
+    const sourceEdges = rawEdges && rawEdges.length > 0 ? rawEdges : storeEdges;
+
+    if (sourceNodes && sourceNodes.length > 0) {
+      // Update node count
+      setNodeCount(sourceNodes.length);
+
+      // Calculate edge count excluding edges with labels "True" and "False"
+      if (sourceEdges && sourceEdges.length > 0) {
+        const filteredEdges = sourceEdges.filter(
+          (edge) => edge.label !== "True" && edge.label !== "False"
+        );
+        setEdgeCount(filteredEdges.length);
+
+        console.log("Updated nodeCount:", sourceNodes.length);
+        console.log("Updated edgeCount (no True/False):", filteredEdges.length);
+      }
+    }
+  }, [rawNodes, rawEdges, storeNodes, storeEdges, setNodeCount, setEdgeCount]);
 
   // Fungsi untuk menambahkan node secara bertahap dengan animasi
   const animateNodesAndEdges = useCallback(() => {
     // Reset state
     setNodes([]);
     setEdges([]);
-    setNodeCount(0);
-    setEdgeCount(0);
-
     // Tentukan sumber data - gunakan rawNodes jika tersedia, jika tidak gunakan storeNodes
     const sourceNodes = rawNodes && rawNodes.length > 0 ? rawNodes : storeNodes;
     const sourceEdges = rawEdges && rawEdges.length > 0 ? rawEdges : storeEdges;
@@ -71,7 +94,6 @@ function WorkFlowPage() {
       sourceNodes.forEach((node, index) => {
         setTimeout(() => {
           setNodes((prevNodes) => [...prevNodes, { ...node }]);
-          setNodeCount(index + 1);
         }, index * 200); // Delay 150ms per node
       });
 
@@ -82,7 +104,6 @@ function WorkFlowPage() {
           sourceEdges.forEach((edge, index) => {
             setTimeout(() => {
               setEdges((prevEdges) => [...prevEdges, { ...edge }]);
-              setEdgeCount(index + 1);
             }, index * 200); // Delay 100ms per edge
           });
         }, nodesDelay);
@@ -102,8 +123,6 @@ function WorkFlowPage() {
     if (initialRender && storeNodes.length > 0) {
       setNodes(storeNodes);
       setEdges(storeEdges);
-      setNodeCount(storeNodes.length);
-      setEdgeCount(storeEdges.length);
       setInitialRender(false);
     }
   }, [initialRender, storeNodes, storeEdges, setNodes, setEdges]);

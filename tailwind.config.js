@@ -6,6 +6,9 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
+    container: {
+      center: true
+    },
     extend: {
       keyframes: {
         "accordion-down": {

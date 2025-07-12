@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import {useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 import ExportDialog from "./export-dialog";
 import {
@@ -45,7 +45,7 @@ export const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 dark:bg-black bg-white shadow-sm border-b">
-      <div className="flex justify-between items-center xl:px-20 px-6 py-4 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center  px-6 py-4 max-w-7xl mx-auto">
         <Logo />
 
         <div className="hidden xl:flex items-center space-x-1">

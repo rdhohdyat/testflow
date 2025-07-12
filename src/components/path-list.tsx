@@ -77,15 +77,15 @@ function PathList() {
             paths.map((item, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-2 rounded-md border bg-neutral-50 dark:bg-neutral-700 text-sm transition-all duration-300 ${
+                className={`flex items-center justify-between gap-2 p-2 rounded-md border bg-neutral-50 dark:bg-neutral-700 text-sm transition-all duration-300 ${
                   visibleItems.includes(index) ? "opacity-100 " : "opacity-0"
                 }`}
               >
                 <div className="font-mono">{item.path.join(" → ")}</div>
                 {item.passed ? (
-                  <CircleCheck className="text-green-500 h-4 w-4" />
+                  <CircleCheck className="flex-shrink-0 text-green-500 h-4 w-4" />
                 ) : (
-                  <CircleX className="text-red-500 h-4 w-4" />
+                  <CircleX className="flex-shrink-0 text-red-500 h-4 w-4" />
                 )}
               </div>
             ))}

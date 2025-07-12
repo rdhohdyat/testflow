@@ -5,31 +5,14 @@ import {
   BackgroundVariant,
 } from "@xyflow/react";
 
-import { Canvg } from "canvg";
-
 import { nodeTypes } from "../data/node";
 import { useCodeStore } from "../store/CodeStore";
-import { useEffect, useRef } from "react";
-import { Button } from "./ui/button";
 
 function ControlFlowGraph() {
   const { nodes, edges } = useCodeStore();
 
-  const svgWrapperRef = useRef(null);
-
-  const handleExportPNG = async () => {
-    const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(svgBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cfg-diagram.svg";
-    a.click();
-    
-  };
-  
-
   return (
-    <div ref={svgWrapperRef} className="h-[300px] w-[300px]">
+    <div className="h-[300px] w-[400px]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
