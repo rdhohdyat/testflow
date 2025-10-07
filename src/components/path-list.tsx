@@ -62,7 +62,7 @@ function PathList() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-base">
           Execution Paths
           <TooltipComponent information="All execution paths from FlowGraph">
             <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">
@@ -83,9 +83,9 @@ function PathList() {
               >
                 <div className="font-mono">{item.path.join(" → ")}</div>
                 {item.passed ? (
-                  <CircleCheck className="flex-shrink-0 text-green-500 h-4 w-4" />
+                  <CircleCheck className="flex-shrink-0 w-4 h-4 text-green-500" />
                 ) : (
-                  <CircleX className="flex-shrink-0 text-red-500 h-4 w-4" />
+                  <CircleX className="flex-shrink-0 w-4 h-4 text-red-500" />
                 )}
               </div>
             ))}
@@ -96,13 +96,13 @@ function PathList() {
           </SheetTrigger>
           <SheetContent className="w-full md:w-3/4 lg:w-2/3" side="right">
             <SheetHeader>
-              <SheetTitle className="flex items-center justify-between">
+              <SheetTitle className="flex items-center justify-between mt-6">
                 <span>All Test Cases</span>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="bg-green-50 text-green-600 dark:bg-green-900 dark:text-green-300">
+                  <Badge variant="outline" className="text-green-600 bg-green-50 dark:bg-green-900 dark:text-green-300">
                     {passedPaths} Passed
                   </Badge>
-                  <Badge variant="outline" className="bg-red-50 text-red-600 dark:bg-red-900 dark:text-red-300">
+                  <Badge variant="outline" className="text-red-600 bg-red-50 dark:bg-red-900 dark:text-red-300">
                     {failedPaths} Failed
                   </Badge>
                 </div>
@@ -119,7 +119,7 @@ function PathList() {
                     item.passed ? "border-l-4 border-l-green-400" : "border-l-4 border-l-red-400"
                   }`}>
                     <CardHeader className="py-3">
-                      <CardTitle className="text-sm flex items-center justify-between">
+                      <CardTitle className="flex items-center justify-between text-sm">
                         <span>Test Case #{index + 1}</span>
                         {item.passed ? (
                           <Badge className="bg-green-500">Passed</Badge>
@@ -130,14 +130,14 @@ function PathList() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div>
-                        <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-1">Execution Path:</h4>
-                        <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded-md font-mono text-xs">
+                        <h4 className="mb-1 text-xs text-gray-500 dark:text-gray-400">Execution Path:</h4>
+                        <div className="p-2 font-mono text-xs rounded-md bg-gray-50 dark:bg-gray-800">
                           {item.path.join(" → ")}
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-1">Test Case Input:</h4>
-                        <pre className="bg-gray-50 dark:bg-gray-800 p-2 rounded-md overflow-auto max-h-32 text-xs">
+                        <h4 className="mb-1 text-xs text-gray-500 dark:text-gray-400">Test Case Input:</h4>
+                        <pre className="p-2 overflow-auto text-xs rounded-md bg-gray-50 dark:bg-gray-800 max-h-32">
                           {JSON.stringify(item.testCase, null, 2)}
                         </pre>
                       </div>
@@ -145,7 +145,7 @@ function PathList() {
                   </Card>
                 ))
               ) : (
-                <div className="text-center py-12 text-gray-500">
+                <div className="py-12 text-center text-gray-500">
                   No test cases available
                 </div>
               )}

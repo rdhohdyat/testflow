@@ -31,23 +31,23 @@ const Service = () => {
   ];
 
   return (
-    <section id="service" className="py-20 bg-neutral-50 dark:bg-black">
-      <div className="container max-w-6xl mx-auto text-center flex flex-col items-center">
+    <section id="service" className="px-6 py-20 bg-neutral-50 dark:bg-black">
+      <div className="container flex flex-col items-center max-w-6xl mx-auto text-center">
         <img
           src={flowGraphImage}
           alt="Services Illustration"
-          className="w-full max-w-md mb-10 drop-shadow-sm rounded-lg"
+          className="w-full max-w-md mb-10 rounded-lg drop-shadow-sm"
         />
 
-        <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-4">
+        <h2 className="mb-4 text-3xl font-bold md:text-4xl text-neutral-900 dark:text-white">
           Our Services
         </h2>
-        <p className="text-muted-foreground mb-12 max-w-3xl text-base md:text-lg">
+        <p className="max-w-3xl mb-12 text-base text-muted-foreground md:text-lg">
           Discover powerful tools for visualizing, analyzing, and evaluating
           your program's control flow with ease.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => (
             <ServiceCard
               key={index}

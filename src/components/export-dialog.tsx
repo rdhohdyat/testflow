@@ -55,37 +55,37 @@ const ExportDialog = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="default" className="gap-2">
-          <DownloadCloud className="h-4 w-4" />
+          <DownloadCloud className="w-4 h-4" />
           Export
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1000px] max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl flex items-center gap-2">
-            <FileDown className="h-5 w-5 text-primary" />
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <FileDown className="w-5 h-5 text-primary" />
             Export Analysis
           </DialogTitle>
         </DialogHeader>
 
         {isCompleted ? (
-          <div className="py-12 flex flex-col items-center justify-center space-y-4">
-            <div className="rounded-full bg-green-100 p-4">
-              <CheckCircle className="h-10 w-10 text-green-600" />
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <div className="p-4 bg-green-100 rounded-full">
+              <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
             <h3 className="text-xl font-medium text-center">Export Complete</h3>
-            <p className="text-neutral-500 text-center">
+            <p className="text-center text-neutral-500">
               Your analysis has been exported successfully.
             </p>
-            <Badge variant="outline" className="mt-4 px-3 py-1 text-sm">
+            <Badge variant="outline" className="px-3 py-1 mt-4 text-sm">
               {`cfg-analysis`}
             </Badge>
           </div>
         ) : isLoading ? (
-          <div className="py-12 flex flex-col items-center justify-center space-y-6">
+          <div className="flex flex-col items-center justify-center py-12 space-y-6">
             <Progress value={75} className="w-[80%]" />
             <div className="text-center">
               <p className="text-lg font-medium">Generating your export...</p>
-              <p className="text-neutral-500 mt-2">
+              <p className="mt-2 text-neutral-500">
                 This may take a few moments
               </p>
             </div>
@@ -102,87 +102,32 @@ const ExportDialog = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <Card className="w-full">
+              <Card className="col-span-12">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <GitGraph className="h-4 w-4 text-primary" />
-                    Control Flow Graph
-                  </CardTitle>
-                  <CardDescription>
-                    Visual representation of the program's control flow
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4 border">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant="outline"
-                          className="bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                        >
-                          {nodeCount} Nodes
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className="bg-purple-50 text-purple-600 dark:bg-purple-900 dark:text-purple-300"
-                        >
-                          {edgeCount} Edges
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="min-h-[300px] flex items-center justify-center">
-                      <div className="h-[300px] w-[400px]">
-                        <ReactFlow
-                          nodes={nodes}
-                          edges={edges}
-                          nodeTypes={nodeTypes}
-                          fitView
-                          fitViewOptions={{
-                            padding: 0.5,
-                            maxZoom: 0.5,
-                            minZoom: 0.7,
-                          }}
-                        >
-                          <Background
-                            variant={BackgroundVariant.Lines}
-                            gap={12}
-                          />
-                          <Controls showInteractive={true} />
-                        </ReactFlow>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <CodeIcon className="h-4 w-4 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <CodeIcon className="w-4 h-4 text-primary" />
                     Source Code
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="rounded-lg bg-neutral-100 dark:bg-neutral-800 p-4 border dark:border-neutral-700">
+                  <div className="p-4 border rounded-lg bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700">
                     <pre className="text-sm font-mono overflow-auto max-h-[400px]">
                       <code>{code}</code>
                     </pre>
                   </div>
                 </CardContent>
               </Card>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
+              <Card className="col-span-6">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <BarChart className="h-4 w-4 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <BarChart className="w-4 h-4 text-primary" />
                     Complexity Metrics
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium">
                           Cyclomatic Complexity
@@ -200,7 +145,7 @@ const ExportDialog = () => {
 
                     <Separator />
 
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium">Code Coverage</p>
                         <p className="text-xs text-muted-foreground">
@@ -209,9 +154,9 @@ const ExportDialog = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-semibold">{percentage}%</p>
-                        <div className="w-32 h-2 bg-neutral-200 dark:bg-neutral-700 rounded-full mt-1">
+                        <div className="w-32 h-2 mt-1 rounded-full bg-neutral-200 dark:bg-neutral-700">
                           <div
-                            className="h-full bg-neutral-800 rounded-full"
+                            className="h-full rounded-full bg-neutral-800"
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
@@ -221,16 +166,16 @@ const ExportDialog = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="col-span-6">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Shield className="w-4 h-4 text-primary" />
                     Path Analysis
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium">Execution Paths</p>
                         <p className="text-xs text-muted-foreground">
@@ -249,15 +194,15 @@ const ExportDialog = () => {
                           paths.map((item, index) => (
                             <div
                               key={index}
-                              className="flex items-center justify-between gap-2 p-2 rounded-md border bg-neutral-50 dark:bg-neutral-700 text-sm transition-all duration-300"
+                              className="flex items-center justify-between gap-2 p-2 text-sm transition-all duration-300 border rounded-md bg-neutral-50 dark:bg-neutral-700"
                             >
                               <div className="font-mono">
                                 {item.path.join(" → ")}
                               </div>
                               {item.passed ? (
-                                <CircleCheck className="flex-shrink-0 text-green-500 h-4 w-4" />
+                                <CircleCheck className="flex-shrink-0 w-4 h-4 text-green-500" />
                               ) : (
-                                <CircleX className="flex-shrink-0 text-red-500 h-4 w-4" />
+                                <CircleX className="flex-shrink-0 w-4 h-4 text-red-500" />
                               )}
                             </div>
                           ))}
@@ -274,8 +219,12 @@ const ExportDialog = () => {
           <Button variant="outline" type="button" disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={() => toPDF()} disabled={isLoading || isCompleted} className="gap-2">
-            <DownloadCloud className="h-4 w-4" />
+          <Button
+            onClick={() => toPDF()}
+            disabled={isLoading || isCompleted}
+            className="gap-2"
+          >
+            <DownloadCloud className="w-4 h-4" />
             {isLoading ? "Exporting..." : "Export Now"}
           </Button>
         </DialogFooter>

@@ -14,13 +14,14 @@ import { ModeToggle } from "./mode-toggle";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
+  { label: "Docs", href: "#docs" },
   { label: "Services", href: "#service" },
   { label: "Contact", href: "#contact" },
 ];
 
 export const Navbar = () => {
   const location = useLocation();
-  const isWorkPage = location.pathname === "/work";
+  const isWorkPage = location.pathname === "/work" || "/dashboard";
 
   const renderNavLinks = (isMobile = false) => (
     <>
@@ -44,23 +45,24 @@ export const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 dark:bg-black bg-white shadow-sm border-b">
-      <div className="flex justify-between items-center  px-6 py-4 max-w-7xl mx-auto">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-white border-b shadow-sm dark:bg-black">
+      <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         <Logo />
 
-        <div className="hidden xl:flex items-center space-x-1">
+        <div className="items-center hidden space-x-1 xl:flex">
           <Link
             to="/"
-            className="text-neutral-700 dark:text-neutral-100 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+            className="px-4 py-2 text-sm transition-colors text-neutral-700 dark:text-neutral-100 hover:text-neutral-900"
           >
             Home
           </Link>
-          <a
-            href={isWorkPage ? "/" : "#docs"}
-            className="text-neutral-700 dark:text-neutral-100 hover:text-neutral-900 transition-colors px-4 py-2 text-sm"
+
+          <Link
+            to="/dashboard"
+            className="px-4 py-2 text-sm transition-colors text-neutral-700 dark:text-neutral-100 hover:text-neutral-900"
           >
-            Docs
-          </a>
+            Dashboard
+          </Link>
           {renderNavLinks(false)}
         </div>
 
@@ -74,19 +76,19 @@ export const Navbar = () => {
             <SheetHeader>
               <SheetTitle className="text-xl font-medium">CodeFlow</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col mt-6 gap-3">
+            <div className="flex flex-col gap-3 mt-6">
               <Link
                 to="/"
-                className="text-neutral-700 hover:text-neutral-900 transition-colors  px-4 py-2"
+                className="px-4 py-2 transition-colors text-neutral-700 hover:text-neutral-900"
               >
                 Home
               </Link>
-              <a
-                href={isWorkPage ? "/" : "#docs"}
-                className="text-neutral-700 hover:text-neutral-900 transition-colors  px-4 py-2"
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 transition-colors text-neutral-700 hover:text-neutral-900"
               >
-                Docs
-              </a>
+                Dashboard
+              </Link>
               {renderNavLinks(true)}
             </div>
           </SheetContent>

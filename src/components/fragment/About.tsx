@@ -1,24 +1,24 @@
 import { Card, CardContent } from "../ui/card";
-import coding from "../../assets/coding.svg"; // ganti dengan ilustrasi yang sesuai
+import coding from "../../assets/coding.svg";
 
 const About = () => {
   return (
-    <section id="about" className="py-20 container">
-      <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
+    <section id="about" className="px-6 py-20 continer">
+      <div className="flex flex-col-reverse items-center max-w-6xl gap-12 mx-auto md:flex-row">
         {/* Text Section */}
         <div className="flex-1">
-          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-3">
+          <h2 className="mb-3 text-3xl font-bold md:text-4xl text-neutral-900 dark:text-white">
             About TestFlow
           </h2>
-          <p className="text-muted-foreground mb-6 text-base md:text-lg">
+          <p className="mb-6 text-base text-muted-foreground md:text-lg">
             Empowering developers with visual tools to understand and optimize code logic.
           </p>
 
-          <Card className="bg-background border text-left">
-            <CardContent className="px-6 md:px-10 py-8 flex flex-col gap-6 text-neutral-700 dark:text-white text-base leading-relaxed">
+          <Card className="text-left border bg-background">
+            <CardContent className="flex flex-col gap-6 px-6 py-8 text-base leading-relaxed md:px-10 text-neutral-700 dark:text-white">
               <p>
                 <span className="font-medium text-neutral-900 dark:text-white">TestFlow</span> is a developer-focused platform designed to simplify code logic analysis through clear and interactive{" "}
-                <span className="text-primary font-medium">Control Flow Graphs</span>. Our visual tools help you break down complex logic into understandable segments.
+                <span className="font-medium text-primary">Control Flow Graphs</span>. Our visual tools help you break down complex logic into understandable segments.
               </p>
 
               <p>

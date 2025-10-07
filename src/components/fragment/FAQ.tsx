@@ -46,13 +46,13 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 container">
+    <section className="container px-6 py-20">
     <div className="max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12 text-neutral-900 dark:text-white">
+      <h2 className="mb-12 text-3xl font-bold text-center text-neutral-900 dark:text-white">
         Frequently Asked Questions
       </h2>
   
-      <div className="grid md:grid-cols-2 gap-10 items-start">
+      <div className="grid items-start gap-10 md:grid-cols-2">
         {/* Illustration */}
         <div className="hidden md:block">
           <img

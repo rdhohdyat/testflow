@@ -158,14 +158,7 @@ function CodeEditor() {
           style: edge.style || { strokeWidth: 2, stroke: "#000000" },
         }));
 
-        const filteredEdges = mappedEdges.filter(
-          (edge: any) => edge.label !== "True"
-        );
-
-        setEdgeCount(filteredEdges.length);
         setNodeCount(mappedNodes.length);
-
-        console.log(filteredEdges.length);
         setNodes(mappedNodes);
         setEdges(mappedEdges);
 

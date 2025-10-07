@@ -128,17 +128,17 @@ function WorkFlowPage() {
   }, [initialRender, storeNodes, storeEdges, setNodes, setEdges]);
 
   return (
-    <div className="bg-neutral-50 min-h-screen dark:bg-black">
+    <div className="min-h-screen bg-neutral-50 dark:bg-black">
       <Navbar />
 
-      <div className="hidden xl:block px-16 pt-20 pb-6">
+      <div className="hidden px-16 pt-20 pb-6 xl:block">
         <div className="flex items-center justify-between my-4">
           <ServerStatus />
         </div>
 
         <ResizablePanelGroup
           direction="horizontal"
-          className="min-h-[75vh] border rounded-lg bg-white dark:bg-black shadow-sm"
+          className="min-h-[75vh] border rounded-2xl bg-white dark:bg-black shadow-lg"
         >
           <ResizablePanel minSize={20} defaultSize={25} className="border-r">
             <CodeEditor />
@@ -154,7 +154,7 @@ function WorkFlowPage() {
             <div className="p-4 border-b">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <GitFork className="h-5 w-5 text-neutral-700" />
+                  <GitFork className="w-5 h-5 text-neutral-700" />
                   <h2 className="font-semibold">Control Flow Graph</h2>
                 </div>
                 <Badge variant="secondary">
@@ -172,7 +172,7 @@ function WorkFlowPage() {
                 fitView
                 fitViewOptions={{
                   maxZoom: 0.8,
-                  minZoom: 0.6,
+                  minZoom: 0.5,
                 }}
               >
                 <Background variant={BackgroundVariant.Dots} gap={12} />
@@ -185,18 +185,18 @@ function WorkFlowPage() {
 
           {/* Analysis Panel */}
           <ResizablePanel minSize={20} defaultSize={25} className="border-l">
-            <div className="h-full flex flex-col">
-              <Tabs defaultValue="metrics" className="h-full flex flex-col">
+            <div className="flex flex-col h-full">
+              <Tabs defaultValue="metrics" className="flex flex-col h-full">
                 <TabsList className="grid grid-cols-2 mx-4 mt-4">
                   <TabsTrigger value="metrics">
                     <div className="flex items-center gap-1">
-                      <ListChecks className="h-4 w-4" />
+                      <ListChecks className="w-4 h-4" />
                       <span>Metrics</span>
                     </div>
                   </TabsTrigger>
                   <TabsTrigger value="testcase">
                     <div className="flex items-center gap-1">
-                      <Code className="h-4 w-4" />
+                      <Code className="w-4 h-4" />
                       <span>Test Cases</span>
                     </div>
                   </TabsTrigger>
@@ -208,7 +208,7 @@ function WorkFlowPage() {
                 >
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 text-base">
                         Cyclomatic Complexity
                         <TooltipComponent information="Minimum number of paths to be tested">
                           <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">

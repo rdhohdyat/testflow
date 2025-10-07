@@ -50,14 +50,14 @@ const Docs = () => {
   ];
 
   return (
-    <section id="docs" className="py-20 container ">
+    <section id="docs" className="container px-6 py-20 ">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-10 text-neutral-900 dark:text-white">
+        <h2 className="mb-10 text-3xl font-bold text-center text-neutral-900 dark:text-white">
           How TestFlow Works ?
         </h2>
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-          <div className="xl:col-span-5 space-y-5">
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-12">
+          <div className="space-y-5 xl:col-span-5">
             {steps.map((step, index) => (
               <StepCard
                 key={index}
@@ -68,11 +68,11 @@ const Docs = () => {
             ))}
           </div>
 
-          <div className="xl:col-span-7 flex  justify-center">
+          <div className="flex justify-center xl:col-span-7">
             <img
               src={docsImage}
               alt="Services Illustration"
-              className="w-full drop-shadow-sm rounded-lg"
+              className="w-full rounded-lg drop-shadow-sm"
             />
           </div>
         </div>
