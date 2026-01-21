@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCodeStore } from "../store/CodeStore";
+import { motion, AnimatePresence } from "framer-motion";
+
+// UI Components
 import TooltipComponent from "./tooltip-component";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Badge } from "./ui/badge";
 import {
   Card,
   CardHeader,
@@ -10,183 +15,215 @@ import {
   CardDescription,
   CardFooter,
 } from "./ui/card";
-import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
-import { Loader2, CheckCircle, Play, Trash2, Save, ArrowRight, Info } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+
+// Icons
+import {
+  Loader2,
+  CheckCircle,
+  Play,
+  Trash2,
+  Save,
+  Info,
+} from "lucide-react";
+
+// --- Utility Functions (Outside Component) ---
+
+// Algoritma untuk membandingkan kemiripan path
+const calculateLCS = (a, b) => {
+  const dp = Array.from({ length: a.length + 1 }, () =>
+    Array(b.length + 1).fill(0)
+  );
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+  return dp[a.length][b.length];
+};
+
+// Helper untuk parsing parameter dari LocalStorage
+const parseStoredParams = (jsonString) => {
+  try {
+    const parsed = JSON.parse(jsonString);
+    if (!Array.isArray(parsed) || parsed.length === 0) return [];
+
+    // Case 1: Array of strings ["a", "b"]
+    if (typeof parsed[0] === "string") {
+      return parsed.map((name) => ({ name, value: undefined }));
+    }
+
+    // Case 2: Array of objects [{name: "a", value: 1}]
+    if (typeof parsed[0] === "object") {
+      return parsed.map((param) => {
+        if (param.name) return param;
+        // Fallback untuk struktur aneh
+        const nameKey = Object.keys(param).find((k) => k !== "value");
+        return {
+          name: nameKey ? param[nameKey] : "unknown",
+          value: param.value,
+        };
+      });
+    }
+    return [];
+  } catch (e) {
+    console.error("Error parsing stored params:", e);
+    return [];
+  }
+};
+
+// --- Main Component ---
 
 function TestCase() {
-  const { params, code, paths, setPaths, setParams } = useCodeStore();
+  // Store
+  const { params, code, paths, setPaths, setParams , addExecutedTestCase} = useCodeStore();
 
+  // Local State
   const [inputValues, setInputValues] = useState({});
-  const [executing, setExecuting] = useState(false);
   const [resultText, setResultText] = useState([]);
   const [lastTestParams, setLastTestParams] = useState({});
-  const [isTestCaseSave, setIsTestCaseSave] = useState(false);
-  const [isSavingTestCase, setIsSavingTestCase] = useState(false);
-  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  
+  // UI State
+  const [executing, setExecuting] = useState(false);
+  const [isSaved, setIsSaved] = useState(false); // Refactored from isTestCaseSave
+  const [isSaving, setIsSaving] = useState(false); // Refactored from isSavingTestCase
+  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
 
-  const handleChange = (paramName, value) => {
+  // --- Effects ---
+
+  // Load params from localStorage on mount
+  useEffect(() => {
+    const storedParams = localStorage.getItem("params");
+    if (storedParams) {
+      const formattedParams = parseStoredParams(storedParams);
+      if (formattedParams.length > 0) {
+        setParams(formattedParams);
+      }
+    }
+  }, [setParams]);
+
+  // --- Handlers ---
+
+  const handleInputChange = (paramName, value) => {
     setInputValues((prev) => ({
       ...prev,
       [paramName]: value,
     }));
   };
 
-  useEffect(() => {
-    const storedParams = localStorage.getItem("params");
-
-    if (storedParams) {
-      try {
-        const parsed = JSON.parse(storedParams);
-        let fixedParams;
-
-        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "string") {
-          fixedParams = parsed.map((paramName) => ({
-            name: paramName,
-            value: undefined,
-          }));
-        } else if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
-          fixedParams = parsed.map((param) => {
-            if (param.name !== undefined) {
-              return param;
-            } else {
-              const keys = Object.keys(param);
-              const nameKey = keys.find((k) => k !== "value");
-              return {
-                name: nameKey ? param[nameKey] : "unknown",
-                value: param.value,
-              };
-            }
-          });
-        } else {
-          console.warn("Unexpected parameter format in localStorage");
-          fixedParams = [];
-        }
-
-        setParams(fixedParams);
-      } catch (e) {
-        console.error("Invalid params in localStorage:", e);
-      }
-    }
-  }, [setParams]);
-
-  const clearValues = () => {
+  const handleClear = () => {
     setInputValues({});
     setResultText([]);
-    setIsTestCaseSave(false);
+    setIsSaved(false);
+  };
+
+  const prepareParamsForExecution = () => {
+    const testParams = {};
+    params.forEach((param) => {
+      let value = inputValues[param.name];
+      // Auto-convert types
+      if (!isNaN(Number(value)) && value !== "") value = Number(value);
+      else if (value === "true") value = true;
+      else if (value === "false") value = false;
+      
+      testParams[param.name] = value;
+    });
+    return testParams;
   };
 
   const executeTestCase = async () => {
     try {
       setExecuting(true);
-      setIsTestCaseSave(false);
+      setIsSaved(false);
 
-      const testParams = {};
-      params.forEach((param) => {
-        let value = inputValues[param.name];
+      const testParams = prepareParamsForExecution();
 
-        if (!isNaN(Number(value))) {
-          value = Number(value);
-        } else if (value === "true") {
-          value = true;
-        } else if (value === "false") {
-          value = false;
-        }
-
-        testParams[param.name] = value;
-      });
-
-      // Simulate delay
+      // UI Delay Simulation
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const response = await fetch("http://localhost:8000/test_execution/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           code,
           parameters: testParams,
         }),
       });
 
+      if (!response.ok) throw new Error("Network response was not ok");
+
       const result = await response.json();
 
-      setResultText(result.actual_execution_path.line_numbers);
+      setResultText(result.actual_execution_path?.line_numbers || []);
       setLastTestParams(testParams);
     } catch (error) {
-      console.error("Error executing test case:", error);
+      console.error("Gagal menjalankan test case:", error);
     } finally {
       setExecuting(false);
     }
   };
 
-  const handleSaveTestCase = async () => {
-    setIsSavingTestCase(true);
-
-    const longestCommonSubsequence = (a, b) => {
-      const dp = Array.from({ length: a.length + 1 }, () =>
-        Array(b.length + 1).fill(0)
-      );
-
-      for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-          if (a[i - 1] === b[j - 1]) {
-            dp[i][j] = dp[i - 1][j - 1] + 1;
-          } else {
-            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-          }
-        }
-      }
-
-      return dp[a.length][b.length];
-    };
-
-    const threshold = 0.9;
-    const similarPaths = paths.filter(({ path }) => {
-      const lcs = longestCommonSubsequence(resultText, path);
-      const similarity = lcs / path.length;
-      return similarity >= threshold;
-    });
-
-    const updatedPaths = paths.map((item) => {
-      const isSimilar = similarPaths.some(
-        (p) => JSON.stringify(p.path) === JSON.stringify(item.path)
-      );
-
-      return {
-        ...item,
-        passed: isSimilar ? true : item.passed,
-        testCase: isSimilar ? lastTestParams : item.testCase,
-      };
-    });
-
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setPaths(updatedPaths);
-    setIsTestCaseSave(true);
-    setIsSavingTestCase(false);
+  const handleSaveResult = async () => {
+    setIsSaving(true);
     
-    // Show success animation
-    setShowSuccessAnimation(true);
-    setTimeout(() => setShowSuccessAnimation(false), 2000);
+    // Logic Similarity Check
+    const SIMILARITY_THRESHOLD = 0.9;
+    
+    // Identifikasi path yang mirip/sama dengan hasil eksekusi
+    const similarPathsIndices = new Set();
+    
+    paths.forEach((p, index) => {
+      const lcs = calculateLCS(resultText, p.path);
+      const similarity = lcs / p.path.length;
+      if (similarity >= SIMILARITY_THRESHOLD) {
+        similarPathsIndices.add(index);
+      }
+    });
+
+    const updatedPaths = paths.map((item, index) => {
+      if (similarPathsIndices.has(index)) {
+        return {
+          ...item,
+          passed: true,
+          testCase: lastTestParams,
+        };
+      }
+      return item;
+    });
+
+    // Simulasi Save Delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+    setPaths(updatedPaths);
+    setIsSaved(true);
+    setIsSaving(false);
+
+    // Trigger Animation
+    setShowSuccessAnim(true);
+    setTimeout(() => setShowSuccessAnim(false), 2000);
   };
 
-  // Removed path visualizer as requested
+  // Validation
+  const hasRequiredParams = params.length > 0 && 
+    params.every(p => inputValues[p.name] !== undefined && inputValues[p.name] !== "");
 
-  const hasRequiredParams = params.length > 0 && Object.keys(inputValues).length >= params.length;
+  // --- Render ---
 
   return (
     <div className="space-y-4">
+      {/* CARD 1: Input Parameters */}
       <Card className="border-2 border-neutral-100 shadow-sm">
         <CardHeader className="pb-2 bg-neutral-50 rounded-t-lg">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="text-base font-bold">Test Case Parameters</CardTitle>
-              <CardDescription className="text-sm">
+              <CardTitle className="text-base font-bold">Parameter Test Case</CardTitle>
+              <CardDescription className="text-sm mt-1">
                 {params?.length > 0 ? (
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <div className="flex flex-wrap gap-1">
                     {params.map((p) => (
                       <Badge key={p.name} variant="outline" className="bg-neutral-100">
                         {p.name}
@@ -194,11 +231,13 @@ function TestCase() {
                     ))}
                   </div>
                 ) : (
-                  "No parameters detected"
+                  "Tidak ada parameter terdeteksi"
                 )}
               </CardDescription>
             </div>
-            <Info className="h-5 w-5 text-neutral-400" />
+            <TooltipComponent information="Parameter yang dibutuhkan fungsi">
+              <Info className="h-5 w-5 text-neutral-400" />
+            </TooltipComponent>
           </div>
         </CardHeader>
 
@@ -206,13 +245,16 @@ function TestCase() {
           <AnimatePresence>
             {params.map((param, index) => (
               <motion.div
-                key={index}
+                key={param.name || index}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className="space-y-1"
               >
-                <label className="text-sm font-medium flex items-center gap-1" htmlFor={`param-${index}`}>
+                <label
+                  className="text-sm font-medium flex items-center gap-1"
+                  htmlFor={`param-${index}`}
+                >
                   {param.name}:
                   {!inputValues[param.name] && (
                     <span className="text-xs text-red-500">*</span>
@@ -221,10 +263,9 @@ function TestCase() {
                 <Input
                   id={`param-${index}`}
                   type="text"
-                  placeholder={`Enter value for ${param.name}`}
+                  placeholder={`Nilai untuk ${param.name}`}
                   value={inputValues[param.name] || ""}
-                  onChange={(e) => handleChange(param.name, e.target.value)}
-                 
+                  onChange={(e) => handleInputChange(param.name, e.target.value)}
                 />
               </motion.div>
             ))}
@@ -240,109 +281,101 @@ function TestCase() {
             {executing ? (
               <>
                 <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                Evaluating...
+                Mengevaluasi...
               </>
             ) : (
               <>
                 <Play className="h-4 w-4 mr-2" />
-                Run Test
+                Jalankan Tes
               </>
             )}
           </Button>
 
           <Button
             variant="outline"
-            onClick={clearValues}
-            disabled={!params?.length}
+            onClick={handleClear}
+            disabled={!params?.length || executing}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Clear
+            Hapus
           </Button>
         </CardFooter>
       </Card>
 
+      {/* CARD 2: Execution Result */}
       <Card className="border-2 border-neutral-100 shadow-sm">
         <CardHeader className="pb-2 bg-neutral-50 rounded-t-lg">
           <div className="flex justify-between items-center">
             <CardTitle className="text-base font-bold flex items-center gap-2">
-              Execution Path
-              <TooltipComponent information="Shows the line numbers executed in sequence">
-                <span className="text-xs bg-neutral -100 px-2 py-0.5 rounded-full">
+              Jalur Eksekusi
+              <TooltipComponent information="Urutan baris kode yang dieksekusi">
+                <span className="text-xs bg-neutral-100 px-2 py-0.5 rounded-full cursor-help">
                   ?
                 </span>
               </TooltipComponent>
             </CardTitle>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pt-4">
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {resultText.length > 0 ? (
               <motion.div
+                key="result"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 className="p-4 rounded-md bg-neutral-50 border border-neutral-200"
               >
-                <div className="font-mono text-sm">{resultText.join(" → ")}</div>
+                <div className="font-mono text-sm break-all">
+                  {resultText.join(" → ")}
+                </div>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
+                key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 className="p-6 rounded-md bg-neutral-50 border border-dashed border-neutral-300 flex flex-col items-center justify-center text-center"
               >
                 <p className="text-neutral-500 text-sm">
-                  Enter parameter and run test.
+                  Masukkan parameter dan jalankan tes untuk melihat hasil.
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Save Button & Animation */}
           <AnimatePresence>
             {resultText.length > 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-end mt-4"
               >
                 <Button
-                  variant={isTestCaseSave ? "outline" : "default"}
-                  onClick={handleSaveTestCase}
-                  disabled={isTestCaseSave || isSavingTestCase}
-                  className="relative"
+                  variant={isSaved ? "outline" : "default"}
+                  onClick={handleSaveResult}
+                  disabled={isSaved || isSaving}
+                  className="relative overflow-hidden w-full"
                 >
-                  {isSavingTestCase ? (
+                  {isSaving ? (
                     <>
                       <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                      Saving...
+                      Menyimpan...
                     </>
-                  ) : isTestCaseSave ? (
+                  ) : isSaved ? (
                     <>
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Saved
+                      Tersimpan
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      Save Test Case
+                      Simpan Test Case
                     </>
                   )}
-                  
-                  {/* Success animation overlay */}
-                  <AnimatePresence>
-                    {showSuccessAnimation && (
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1.2, opacity: 1 }}
-                        exit={{ scale: 2, opacity: 0 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        <div className="bg-green-100 bg-opacity-80 rounded-md p-1">
-                          <CheckCircle className="h-6 w-6 text-green-600" />
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </Button>
               </motion.div>
             )}

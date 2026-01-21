@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { useToast } from "../hooks/use-toast";
 import { useCodeStore } from "../store/CodeStore";
 import { Code2, Trash2, GitCompare, Loader2 } from "lucide-react";
-import path from "path";
+// import path from "path"; // Sepertinya tidak digunakan, bisa dihapus jika perlu
 
 function CodeEditor() {
   const { toast } = useToast();
@@ -23,7 +23,7 @@ function CodeEditor() {
     setEdges,
     setCyclomaticComplexity,
     setTriggerAnimation,
-    setEdgeCount,
+    setEdgeCount, // Tidak digunakan di logic generate, tapi diambil dari store
     setNodeCount,
   } = useCodeStore();
 
@@ -36,11 +36,11 @@ function CodeEditor() {
     const editor = monaco.editor.create(editorRef.current, {
       value:
         code ||
-        `def check_even_odd(n):
+        `def cek_ganjil_genap(n):
   if n % 2 == 0:
-    return "Even"
+    return "Genap"
   else:
-    return "Odd"`,
+    return "Ganjil"`,
       language: "python",
       theme: isDark ? "vs-dark" : "vs-light",
       fontSize: 13,
@@ -55,7 +55,7 @@ function CodeEditor() {
     return () => editor.dispose();
   }, []);
 
-  // Helper function to add a minimum delay to show loading
+  // Fungsi pembantu untuk menambahkan penundaan minimum agar loading terlihat
   const withMinimumDelay = async (promise: any, minimumDelay = 1000) => {
     const startTime = Date.now();
     const [result] = await Promise.all([
@@ -63,7 +63,7 @@ function CodeEditor() {
       new Promise((resolve) => setTimeout(resolve, minimumDelay)),
     ]);
 
-    // Add additional delay if needed to reach minimum delay
+    // Tambahkan penundaan jika waktu eksekusi kurang dari minimum delay
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < minimumDelay) {
       await new Promise((resolve) =>
@@ -81,17 +81,17 @@ function CodeEditor() {
     const codeInput = editor.getValue();
     if (!codeInput.trim()) {
       return toast({
-        title: "Code is Empty",
+        title: "Kode Kosong",
         variant: "destructive",
-        description: "Please enter valid Python code to analyze.",
+        description: "Mohon masukkan kode Python yang valid untuk dianalisis.",
       });
     }
 
     setCode(codeInput);
     setIsLoading(true);
     toast({
-      title: "Analyzing Code",
-      description: "Please wait while we generate the CFG...",
+      title: "Menganalisis Kode",
+      description: "Mohon tunggu, sedang membuat CFG...",
     });
 
     try {
@@ -104,22 +104,20 @@ function CodeEditor() {
         1500
       );
 
-      if (!response.ok) throw new Error("Failed to fetch data from server");
+      if (!response.ok) throw new Error("Gagal mengambil data dari server");
 
       const data = await response.json();
-      console.log("Response from server:", data);
+      console.log("Respon dari server:", data);
 
       if (data.execution_paths) {
-        const paths = data.execution_paths.map((path) => ({
+        const paths = data.execution_paths.map((path: any) => ({
           path,
           passed: false,
           test_case: null,
         }));
 
         setPaths(paths || []);
-        console.log(path)
       }
-
 
       if (data.cyclomatic_complexity) {
         setCyclomaticComplexity(data.cyclomatic_complexity);
@@ -130,7 +128,7 @@ function CodeEditor() {
       }
 
       if (data.nodes && data.edges) {
-        // Map nodes and edges
+        // Memetakan nodes dan edges
         const mappedNodes = data.nodes.map((node: any) => ({
           id: node.id,
           type: node.type || "default",
@@ -167,16 +165,16 @@ function CodeEditor() {
         }, 100);
 
         toast({
-          title: "Analysis Completed",
-          description: `Successfully processed CFG`,
-          variant: "default"
+          title: "Analisis Selesai",
+          description: `Berhasil memproses CFG`,
+          variant: "default",
         });
       } else {
         throw new Error(data.message);
       }
     } catch (error) {
       toast({
-        title: "Error",
+        title: "Terjadi Kesalahan",
         variant: "destructive",
         description: `${error}`,
       });
@@ -191,11 +189,11 @@ function CodeEditor() {
         <div className="flex items-center gap-2">
           <Code2 className="w-5 h-5 text-neutral-700 dark:text-white" />
           <h1 className="font-semibold text-neutral-800 dark:text-white">
-            Code Editor
+            Editor Kode
           </h1>
         </div>
         <div className="text-xs text-neutral-500 dark:text-white">
-          Enter your python code
+          Masukkan kode python Anda
         </div>
       </div>
 
@@ -209,7 +207,7 @@ function CodeEditor() {
           disabled={isLoading}
           className="flex items-center gap-1"
         >
-          <Trash2 className="w-4 h-4" /> Clear
+          <Trash2 className="w-4 h-4" /> Hapus
         </Button>
         <Button
           className="w-full"
@@ -219,12 +217,12 @@ function CodeEditor() {
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Generating...
+              Memproses...
             </>
           ) : (
             <>
               <GitCompare className="w-4 h-4 mr-2" />
-              Generate CFG
+              Buat CFG
             </>
           )}
         </Button>

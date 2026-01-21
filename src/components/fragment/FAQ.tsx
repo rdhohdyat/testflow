@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import FaQAccordion from "../faq-accordion";
 import faqIllustration from "../../assets/faq.svg"
 
@@ -9,73 +10,85 @@ type FAQItem = {
 const FAQ = () => {
   const faqs: FAQItem[] = [
     {
-      question: "What is a Control Flow Graph (CFG)?",
+      question: "Apa itu Control Flow Graph (CFG)?",
       answer:
-        "A Control Flow Graph is a representation of all possible paths that might be traversed through a program during its execution.",
+        "Singkatnya, CFG adalah gambaran alur program. Ini membantu kita melihat semua kemungkinan jalan yang bisa dilewati kode saat dijalankan.",
     },
     {
-      question: "What is TestFlow?",
+      question: "Apa kegunaan utama TestFlow?",
       answer:
-        "TestFlow is a feature in our application that visually represents the control flow of a program, helping developers understand and analyze their code.",
+        "TestFlow membantu mahasiswa atau developer melihat struktur logika kode mereka secara visual, sehingga lebih mudah dipahami daripada hanya membaca teks baris per baris.",
     },
     {
-      question: "How does the application generate a CFG?",
+      question: "Bagaimana cara aplikasi ini membuat grafik?",
       answer:
-        "The application parses the source code and identifies control structures like loops, conditions, and function calls to construct the graph.",
+        "Aplikasi akan membaca kode Python Anda, mencari perintah seperti perulangan (loop) dan percabangan (if), lalu menghubungkannya menjadi sebuah grafik.",
     },
     {
-      question: "Can I upload my own code to generate a graph?",
+      question: "Bahasa pemrograman apa saja yang didukung?",
       answer:
-        "Yes, you can upload your source code files, and the application will generate a corresponding Control Flow Graph.",
+        "Untuk saat ini, fokus utama aplikasi kami adalah mendukung bahasa Python.",
     },
     {
-      question: "What programming languages are supported?",
+      question: "Apakah saya bisa menyimpan hasil analisisnya?",
       answer:
-        "Currently, the application supports Python, JavaScript, and Java, with plans to add more languages in the future.",
+        "Tentu! Kamu bisa membuat proyek, menyimpan riwayat analisis, dan mengekspor hasilnya dalam format PDF atau JSON.",
     },
     {
-      question: "Is the Control Flow Graph exportable?",
+      question: "Apa itu Cyclomatic Complexity yang ada di aplikasi?",
       answer:
-        "Yes, you can export the graph as an image or PDF for documentation purposes.",
-    },
-    {
-      question: "Does the application support static analysis tools?",
-      answer:
-        "Yes, the application integrates with static analysis tools to enhance the insights provided by the Control Flow Graph.",
+        "Itu adalah metrik sederhana untuk mengukur seberapa kompleks kode kamu berdasarkan jumlah jalur yang ada di dalam grafik alur.",
     },
   ];
 
   return (
-    <section className="container px-6 py-20">
-    <div className="max-w-6xl mx-auto">
-      <h2 className="mb-12 text-3xl font-bold text-center text-neutral-900 dark:text-white">
-        Frequently Asked Questions
-      </h2>
+    <section id="faq" className="container px-6 py-20 bg-white dark:bg-neutral-900/10">
+      <div className="max-w-6xl mx-auto">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12 text-3xl font-bold text-center text-neutral-900 dark:text-white"
+        >
+          Pertanyaan Umum
+        </motion.h2>
   
-      <div className="grid items-start gap-10 md:grid-cols-2">
-        {/* Illustration */}
-        <div className="hidden md:block">
-          <img
-            src={faqIllustration}
-            alt="FAQ Illustration"
-            className="w-full max-w-md mx-auto"
-          />
-        </div>
-  
-        {/* FAQ list */}
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <FaQAccordion
-              key={index}
-              question={faq.question}
-              answer={faq.answer}
-              index={index}
+        <div className="grid items-center gap-16 md:grid-cols-2">
+          {/* Ilustrasi */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="hidden md:block"
+          >
+            <img
+              src={faqIllustration}
+              alt="FAQ Ilustrasi"
+              className="w-full max-w-sm mx-auto opacity-80"
             />
-          ))}
+          </motion.div>
+  
+          {/* Daftar FAQ */}
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <FaQAccordion
+                  question={faq.question}
+                  answer={faq.answer}
+                  index={index}
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
   );
 };
 

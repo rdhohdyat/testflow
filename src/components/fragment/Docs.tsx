@@ -1,4 +1,4 @@
-import { Card } from "../ui/card";
+import { motion } from "framer-motion";
 import docsImage from "../../assets/docs.svg";
 import StepCard from "../step-card";
 import { ChartGantt, Code, Combine, GitCommitVertical, GitFork, Wallpaper } from "lucide-react";
@@ -12,69 +12,93 @@ type Step = {
 const Docs = () => {
   const steps: Step[] = [
     {
-      title: "Transform Python Code to AST",
+      title: "Baca Kode Python",
       description:
-        "Convert the Python source code into an Abstract Syntax Tree (AST), which represents the syntactic structure of the code.",
-      icon: <Code/>,
+        "Sistem membaca kode Python Anda dan mengubahnya menjadi struktur data pohon (AST) agar lebih mudah diproses komputer.",
+      icon: <Code />,
     },
     {
-      title: "Identify AST Nodes",
+      title: "Identifikasi Komponen Kode",
       description:
-        "Traverse the AST to identify and classify its nodes, which represent various syntactic constructs like loops, conditionals, and assignments.",
+        "Menganalisis setiap bagian kode untuk membedakan mana yang merupakan perintah biasa, percabangan (if), atau perulangan (loop).",
       icon: <ChartGantt />,
     },
     {
-      title: "Separate Blocks Based on Rules",
+      title: "Pengelompokan Logika",
       description:
-        "Identify and group code statements into logical blocks based on control flow rules, such as loops and conditionals.",
+        "Mengelompokkan baris kode ke dalam blok-blok logis berdasarkan cara perintah tersebut dijalankan.",
       icon: <Combine />,
     },
     {
-      title: "Create CFG Nodes from AST Nodes",
+      title: "Pembuatan Node Alur",
       description:
-        "Convert the identified blocks into nodes in the Control Flow Graph (CFG), each representing a logical unit of execution.",
+        "Mengubah kelompok kode tadi menjadi titik-titik (node) di dalam grafik alur.",
       icon: <GitCommitVertical />,
     },
     {
-      title: "Add Edges Between CFG Nodes",
+      title: "Menghubungkan Alur",
       description:
-        "Add edges between the CFG nodes to represent the flow of control between different blocks in the program.",
+        "Menarik garis penghubung antar titik untuk menunjukkan urutan eksekusi program dari awal sampai akhir.",
       icon: <GitFork />,
     },
     {
-      title: "Visualize the CFG",
+      title: "Visualisasi Grafik (CFG)",
       description:
-        "Generate a visual representation of the Control Flow Graph (CFG) to easily understand the flow of execution in the code.",
+        "Menampilkan hasil akhir dalam bentuk grafik interaktif yang mudah dipahami secara visual.",
       icon: <Wallpaper />,
     },
   ];
 
   return (
-    <section id="docs" className="container px-6 py-20 ">
+    <section id="docs" className="container px-6 py-20 bg-white dark:bg-neutral-900/50">
       <div className="max-w-6xl mx-auto">
-        <h2 className="mb-10 text-3xl font-bold text-center text-neutral-900 dark:text-white">
-          How TestFlow Works ?
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="mb-4 text-3xl font-bold text-neutral-900 dark:text-white">
+            Bagaimana TestFlow Bekerja?
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
+            Proses sederhana di balik layar untuk mengubah baris kode Anda menjadi grafik alur yang rapi.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 gap-10 xl:grid-cols-12">
-          <div className="space-y-5 xl:col-span-5">
+        <div className="grid grid-cols-1 gap-12 xl:grid-cols-12 items-center">
+          {/* Kolom Kiri: Langkah-langkah */}
+          <div className="space-y-4 xl:col-span-6">
             {steps.map((step, index) => (
-              <StepCard
+              <motion.div
                 key={index}
-                icon={step.icon}
-                title={step.title}
-                description={step.description}
-              />
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <StepCard
+                  icon={step.icon}
+                  title={step.title}
+                  description={step.description}
+                />
+              </motion.div>
             ))}
           </div>
 
-          <div className="flex justify-center xl:col-span-7">
+          {/* Kolom Kanan: Ilustrasi */}
+          <motion.div 
+            className="flex justify-center xl:col-span-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
             <img
               src={docsImage}
-              alt="Services Illustration"
-              className="w-full rounded-lg drop-shadow-sm"
+              alt="Ilustrasi Cara Kerja"
+              className="w-full max-w-md rounded-lg opacity-90 drop-shadow-md"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

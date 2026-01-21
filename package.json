@@ -41,6 +41,7 @@
     "react-dom": "^18.3.1",
     "react-resizable-panels": "^3.0.0",
     "react-router-dom": "^7.0.2",
+    "react-syntax-highlighter": "^16.1.0",
     "react-to-pdf": "^2.0.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",

@@ -39,6 +39,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import TooltipComponent from "../components/tooltip-component";
+import { SaveAnalysisDialog } from "../components/save-analysis-dialog";
 
 function WorkFlowPage() {
   const {
@@ -57,7 +58,7 @@ function WorkFlowPage() {
 
   const [initialRender, setInitialRender] = useState(true);
 
-  // Calculate and update node and edge counts
+ // Calculate and update node and edge counts
   useEffect(() => {
     // Only update counts when we have source data
     const sourceNodes = rawNodes && rawNodes.length > 0 ? rawNodes : storeNodes;
@@ -67,15 +68,13 @@ function WorkFlowPage() {
       // Update node count
       setNodeCount(sourceNodes.length);
 
-      // Calculate edge count excluding edges with labels "True" and "False"
+      // PERBAIKAN: Jangan filter edge "True" atau "False".
+      // Semua edge adalah bagian dari struktur graph yang valid untuk perhitungan complexity.
       if (sourceEdges && sourceEdges.length > 0) {
-        const filteredEdges = sourceEdges.filter(
-          (edge) => edge.label !== "True" && edge.label !== "False"
-        );
-        setEdgeCount(filteredEdges.length);
+        setEdgeCount(sourceEdges.length);
 
         console.log("Updated nodeCount:", sourceNodes.length);
-        console.log("Updated edgeCount (no True/False):", filteredEdges.length);
+        console.log("Updated edgeCount:", sourceEdges.length);
       }
     }
   }, [rawNodes, rawEdges, storeNodes, storeEdges, setNodeCount, setEdgeCount]);
@@ -134,6 +133,8 @@ function WorkFlowPage() {
       <div className="hidden px-16 pt-20 pb-6 xl:block">
         <div className="flex items-center justify-between my-4">
           <ServerStatus />
+
+          <SaveAnalysisDialog />
         </div>
 
         <ResizablePanelGroup
@@ -155,10 +156,10 @@ function WorkFlowPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <GitFork className="w-5 h-5 text-neutral-700" />
-                  <h2 className="font-semibold">Control Flow Graph</h2>
+                  <h2 className="font-semibold">Grafik Alur Kontrol</h2>
                 </div>
                 <Badge variant="secondary">
-                  {nodeCount} Nodes • {edgeCount} Edges
+                  {nodeCount} Node • {edgeCount} Sisi
                 </Badge>
               </div>
             </div>
@@ -183,7 +184,7 @@ function WorkFlowPage() {
 
           <ResizableHandle withHandle />
 
-          {/* Analysis Panel */}
+          {/* Panel Analisis */}
           <ResizablePanel minSize={20} defaultSize={25} className="border-l">
             <div className="flex flex-col h-full">
               <Tabs defaultValue="metrics" className="flex flex-col h-full">
@@ -191,13 +192,13 @@ function WorkFlowPage() {
                   <TabsTrigger value="metrics">
                     <div className="flex items-center gap-1">
                       <ListChecks className="w-4 h-4" />
-                      <span>Metrics</span>
+                      <span>Metrik</span>
                     </div>
                   </TabsTrigger>
                   <TabsTrigger value="testcase">
                     <div className="flex items-center gap-1">
                       <Code className="w-4 h-4" />
-                      <span>Test Cases</span>
+                      <span>Kasus Uji</span>
                     </div>
                   </TabsTrigger>
                 </TabsList>
@@ -209,8 +210,8 @@ function WorkFlowPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2 text-base">
-                        Cyclomatic Complexity
-                        <TooltipComponent information="Minimum number of paths to be tested">
+                        Kompleksitas Siklomatik
+                        <TooltipComponent information="Jumlah minimum jalur yang harus diuji">
                           <span className="text-xs bg-neutral-100 dark:text-black px-1 py-0.5 rounded">
                             ?
                           </span>
@@ -223,17 +224,20 @@ function WorkFlowPage() {
                     <CardContent className="pb-3">
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div className="flex flex-col">
-                          <span className="text-neutral-500">Edges</span>
+                          <span className="text-neutral-500">Sisi (Edges)</span>
                           <span className="font-medium">{edgeCount}</span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-neutral-500">Nodes</span>
+                          <span className="text-neutral-500">Simpul (Nodes)</span>
                           <span className="font-medium">{nodeCount}</span>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
+                  {/* coverage path component */}
                   <CoveragePath />
+
+                  {/* path analysis component */}
                   <PathList />
                 </TabsContent>
 

@@ -7,6 +7,13 @@ type ExecutionPath = {
   testCase: any;
 };
 
+export type TestResult = {
+  params: any;
+  result: any;
+  passed: boolean;
+  path: any[];
+};
+
 type CodeStore = {
   code: string;
   params: string[];
@@ -14,11 +21,13 @@ type CodeStore = {
   nodes: Node[];
   edges: Edge[];
   paths: ExecutionPath[];
-  rawNodes: Node[]; // Untuk menyimpan nodes asli sebelum animasi
-  rawEdges: Edge[]; // Untuk menyimpan edges asli sebelum animasi
-  triggerAnimation: number | null; // Timestamp untuk memicu animasi
-  nodeCount: number; // Menambahkan nodeCount
-  edgeCount: number; // Menambahkan edgeCount
+  rawNodes: Node[]; 
+  rawEdges: Edge[]; 
+  triggerAnimation: number | null;
+  nodeCount: number;
+  edgeCount: number;
+  coverage: number;
+  executedTestCases: TestResult[];
 
   setCode: (code: string) => void;
   setParams: (params: string[]) => void;
@@ -27,22 +36,29 @@ type CodeStore = {
   setPaths: (paths: ExecutionPath[]) => void;
   setTriggerAnimation: (timestamp: number | null) => void;
   setCyclomaticComplexity: (cyclomaticComplexity: number) => void;
-  setNodeCount: (count: number) => void; // Menambahkan setter untuk nodeCount
-  setEdgeCount: (count: number) => void; // Menambahkan setter untuk edgeCount
+  setNodeCount: (count: number) => void; 
+  setEdgeCount: (count: number) => void;
+  setCoverage: (coverage: number) => void; 
+  addExecutedTestCase: (testCase: TestResult) => void;
 };
 
 export const useCodeStore = create<CodeStore>((set) => ({
-  cyclomaticComplexity: Number(localStorage.getItem("cyclomaticComplexity")) || 0,
+  cyclomaticComplexity:
+    Number(localStorage.getItem("cyclomaticComplexity")) || 0,
   code: localStorage.getItem("code") || "",
   params: JSON.parse(localStorage.getItem("params") || "[]"),
   nodes: JSON.parse(localStorage.getItem("nodes") || "[]"),
   edges: JSON.parse(localStorage.getItem("edges") || "[]"),
   paths: JSON.parse(localStorage.getItem("paths") || "[]"),
-  rawNodes: [], // Tidak perlu disimpan di localStorage
-  rawEdges: [], // Tidak perlu disimpan di localStorage
-  triggerAnimation: null, // Tidak perlu disimpan di localStorage
-  nodeCount: Number(localStorage.getItem("nodeCount")) || 0, // Inisialisasi nodeCount
-  edgeCount: Number(localStorage.getItem("edgeCount")) || 0, // Inisialisasi edgeCount
+  rawNodes: [], 
+  rawEdges: [], 
+  triggerAnimation: null, 
+  nodeCount: Number(localStorage.getItem("nodeCount")) || 0, 
+  edgeCount: Number(localStorage.getItem("edgeCount")) || 0,
+  coverage: Number(localStorage.getItem("coverage")) || 0,
+  executedTestCases: JSON.parse(
+    localStorage.getItem("executedTestCases") || "[]",
+  ),
 
   setCode: (code) => {
     localStorage.setItem("code", code);
@@ -55,14 +71,11 @@ export const useCodeStore = create<CodeStore>((set) => ({
   },
 
   setNodes: (nodes) => {
-    // Simpan di localStorage
     localStorage.setItem("nodes", JSON.stringify(nodes));
 
-    // Update nodeCount
     const count = nodes.length;
     localStorage.setItem("nodeCount", count.toString());
 
-    // Simpan nodes asli untuk animasi dan kosongkan nodes yang visible
     set({
       nodes: [], // Kosongkan untuk persiapan animasi
       rawNodes: nodes, // Simpan data asli untuk animasi
@@ -101,8 +114,29 @@ export const useCodeStore = create<CodeStore>((set) => ({
   },
 
   setCyclomaticComplexity: (cyclomaticComplexity) => {
-    localStorage.setItem("cyclomaticComplexity", cyclomaticComplexity.toString());
+    localStorage.setItem(
+      "cyclomaticComplexity",
+      cyclomaticComplexity.toString(),
+    );
     set({ cyclomaticComplexity });
+  },
+
+  setCoverage: (coverage) => {
+    localStorage.setItem("coverage", coverage.toString());
+    set({ coverage });
+  },
+
+  addExecutedTestCase: (testCase) => {
+    set((state) => {
+      // Ambil array lama + item baru
+      const updatedTestCases = [...state.executedTestCases, testCase];
+      
+      // Simpan array baru ke LocalStorage
+      localStorage.setItem("executedTestCases", JSON.stringify(updatedTestCases));
+      
+      // Update state
+      return { executedTestCases: updatedTestCases };
+    });
   },
 
   setNodeCount: (count) => {

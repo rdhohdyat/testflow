@@ -1,53 +1,56 @@
-import { Github, Twitter } from "lucide-react";
+import { Github, Twitter, Mail } from "lucide-react";
 import { Button } from "../ui/button";
 import Logo from "../Logo";
 
 const Footer = () => {
   return (
-    <footer className="bg-muted text-muted-foreground py-8 px-4">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer className="bg-neutral-50 dark:bg-neutral-900/30 text-muted-foreground py-12 px-6 border-t">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        
+        {/* Bagian Logo & Copyright */}
         <div className="text-center md:text-left">
-          <a href="/">
+          <a href="/" className="inline-block mb-3">
             <Logo />
           </a>
-          <p className="text-sm mt-2">
-            © 2025 Ridho Hidayat. All rights reserved.
+          <p className="text-sm opacity-80">
+            © 2025 Ridho Hidayat. Dibuat untuk tugas Proyek Akhir.
           </p>
         </div>
 
-        <nav className="flex flex-wrap justify-center gap-4 text-sm">
-          <a href="#home" className="hover:text-foreground transition-colors">
-            Home
+        {/* Navigasi Sederhana */}
+        <nav className="flex flex-wrap justify-center gap-6 text-sm font-medium">
+          <a href="#home" className="hover:text-primary transition-colors">
+            Beranda
           </a>
-          <a href="#docs" className="hover:text-foreground transition-colors">
-            Docs
+          <a href="#about" className="hover:text-primary transition-colors">
+            Tentang
           </a>
-          <a href="#about" className="hover:text-foreground transition-colors">
-            About
+          <a href="#service" className="hover:text-primary transition-colors">
+            Fitur
           </a>
-          <a
-            href="#service"
-            className="hover:text-foreground transition-colors"
-          >
-            Services
+          <a href="#docs" className="hover:text-primary transition-colors">
+            Cara Kerja
           </a>
-          <a
-            href="#contact"
-            className="hover:text-foreground transition-colors"
-          >
-            Contact
+          <a href="#faq" className="hover:text-primary transition-colors">
+            FAQ
           </a>
         </nav>
 
-        <div className="flex space-x-2">
-          <a href="https://github.com/rdhohdyat">
-            <Button size="icon" variant="outline">
+        {/* Media Sosial & Kontak */}
+        <div className="flex items-center gap-3">
+          <a href="https://github.com/rdhohdyat" target="_blank" rel="noreferrer">
+            <Button size="icon" variant="ghost" className="hover:bg-primary/10 hover:text-primary">
               <Github className="h-5 w-5" />
             </Button>
           </a>
-          <Button size="icon" variant="outline">
+          <Button size="icon" variant="ghost" className="hover:bg-primary/10 hover:text-primary">
             <Twitter className="h-5 w-5" />
           </Button>
+          <a href="mailto:email@kamu.com">
+            <Button size="icon" variant="ghost" className="hover:bg-primary/10 hover:text-primary">
+              <Mail className="h-5 w-5" />
+            </Button>
+          </a>
         </div>
       </div>
     </footer>
