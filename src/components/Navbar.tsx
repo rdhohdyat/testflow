@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Menu, Home, LayoutDashboard, Globe, Github, GitBranch } from "lucide-react";
+import { Menu, Home, LayoutDashboard, Github, GitBranch } from "lucide-react";
 import { Button } from "./ui/button";
-import ExportDialog from "./export-dialog";
 import {
   Sheet,
   SheetContent,

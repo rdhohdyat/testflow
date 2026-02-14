@@ -10,7 +10,7 @@ function CodeEditor() {
   const { toast } = useToast();
   const editorRef = useRef<HTMLDivElement | null>(null);
   const monacoEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
-    null
+    null,
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,7 +23,6 @@ function CodeEditor() {
     setEdges,
     setCyclomaticComplexity,
     setTriggerAnimation,
-    setEdgeCount, // Tidak digunakan di logic generate, tapi diambil dari store
     setNodeCount,
   } = useCodeStore();
 
@@ -67,7 +66,7 @@ function CodeEditor() {
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < minimumDelay) {
       await new Promise((resolve) =>
-        setTimeout(resolve, minimumDelay - elapsedTime)
+        setTimeout(resolve, minimumDelay - elapsedTime),
       );
     }
 
@@ -101,7 +100,7 @@ function CodeEditor() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: codeInput }),
         }),
-        1500
+        1500,
       );
 
       if (!response.ok) throw new Error("Gagal mengambil data dari server");

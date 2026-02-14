@@ -20,13 +20,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-   "baseUrl": ".",
+    "noUncheckedSideEffectImports": true,
+
+    /* PERBAIKAN: Pindahkan baseUrl dan paths ke SINI */
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
       ]
-    },
-  "include": ["src"],
+    }
+  },
+  "include": ["src"]
 }

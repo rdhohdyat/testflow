@@ -4,9 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
@@ -21,8 +19,6 @@ import {
   Download,
   FileText,
   Clock,
-  ChevronRight,
-  LayoutList,
   Share2,
   Copy,
   Check,
@@ -134,6 +130,7 @@ export default function ExportDialog({
         body: [[analysis.source_code]],
         styles: { font: "courier", fontSize: 8 },
         theme: "plain",
+        // @ts-ignore
         fillColor: [245, 245, 245],
       });
 
@@ -203,6 +200,7 @@ export default function ExportDialog({
     }
   };
 
+  // @ts-ignore
   const parseData = (data: any, type: string) => {
     if (!data) return [];
     let parsed = data;
